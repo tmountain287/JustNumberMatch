@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a076924e9a82334daf6141c371965f2, type: 3}
+  m_Name: Encrypted_stageeasytable
+  m_EditorClassIdentifier: Assembly-CSharp::EncryptedCSVData
+  fileName: stageeasytable
+  encryptedData: OiFPIREVOA5JKgcEBBcxDS8OSTwCEBcbChobChEYOiFPIAQaOwQIKgcEEQYsMHM5BBcXCg43CxAWL0krFhICAAEgJhsASF83BgUEBjs9BBUGAFJeNxEoChcdJxwTF1dYDQ4SGAEBNRMJATpZaHNCSVJeKxstBgQVX1RPX1RYclpJPhwJB15URHNHaHNBSVFeKxstBgQVX1dPX1RYclpJPhwJB15URHNHaHNASVBeKxstBgQVX1ZPX1RYclpJPhwJB15URHNHaHNHSVdeKxstBgQVX1FPX1RYclpJPhwJB15URHNHaHNGSVZeKxstBgQVX1BPX1RYclpJPhwJB15URHNHaHNFSVVeKxstBgQVX1NPX1RYclpJPhwJB15URHNHaHNESVReKxstBgQVX1JPX1RYclpJPhwJB15URHNHaHNLSVteKxstBgQVX11PX1RYclpJPhwJB15URHNHaHNKSVpeKxstBgQVX1xPX1RYclpJPhwJB15URHNHaHNCVU9DVVgRBBcUEglPQ1VYclpJVEJJJB0JEHNeVVU7DA0GSUVSYVRIX0hSXicbLBhJVEJJUl5URHMsChUXSVJCSVhSYVRLX1RSXisbLQYEFV9UUl5JWHNHSXR5
+  key: secret_key

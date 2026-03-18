@@ -1,0 +1,31 @@
+using Common.UI;
+using Cysharp.Threading.Tasks;
+using System;
+using UnityEngine;
+
+public sealed class EnterStep : ILobbyFlowStep
+{
+    public string Name => "Enter";
+    public float Weight => 0.60f;
+
+    public bool CanRun(LobbyFlowContext ctx)
+    {
+        return true;
+    }
+
+    public async UniTask<FlowResult> RunAsync(LobbyFlowContext ctx)
+    {
+        ctx.SetTextKey?.Invoke("Entering the Game");
+
+        // ✅ 남은 만큼 채워서 100% 만들고 애니메이션 끝까지 대기
+        await ctx.Progress.SetAsync(1f, 0.35f);
+
+        GameAnalyticsHelper.LogLobbyEntered();
+        // 접속 시점에 다음날 13시 재접속 푸시 예약 (푸시 ON일 때만)
+        LocalPushManager.Instance.RefreshDailyComebackPush();
+        // 여기서 다음 씬/로비 진입/페이드 등
+        UIManager.Instance.ShowUI(BaseUI.Type.STAGE);
+
+        return FlowResult.Continue;
+    }
+}

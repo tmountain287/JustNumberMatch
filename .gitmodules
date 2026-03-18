@@ -1,0 +1,3 @@
+[submodule "Assets/rawRes/TableDatas"]
+	path = Assets/rawRes/TableDatas
+	url = http://www.smallgame.co.kr:6060/dev/gostoplocal_tabledata.git

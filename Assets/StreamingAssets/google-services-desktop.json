@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "788294993689",
+    "project_id": "justonematch-d2cfe",
+    "storage_bucket": "justonematch-d2cfe.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:788294993689:android:28c7f42daa2b3fae6a6788",
+        "android_client_info": {
+          "package_name": "com.justthislab.justonematch"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "788294993689-5egq6j9j2dk5ahovvnjc1lsf5v0kl6q8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.justthislab.justonematch",
+            "certificate_hash": "b4d07a74f58ce85cc8cd60c2c77fce83f5f2ac70"
+          }
+        },
+        {
+          "client_id": "788294993689-dndcr4urbm4244ke9hluvulsfkmuo510.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.justthislab.justonematch",
+            "certificate_hash": "bcb487b4b848cab0a3291067b2cf528689d4f1bc"
+          }
+        },
+        {
+          "client_id": "788294993689-oqhpc6hpcj6utskqe9k45jk8illfp0i6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNDvRoYK-sczT5k8hLTF1xALCsePOMb6U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "788294993689-oqhpc6hpcj6utskqe9k45jk8illfp0i6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      },
+      "admob_app_id": "ca-app-pub-5031274148872505~8907941515"
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a076924e9a82334daf6141c371965f2, type: 3}
+  m_Name: Encrypted_configtable
+  m_EditorClassIdentifier: Assembly-CSharp::EncryptedCSVData
+  fileName: configtable
+  encryptedData: MAoNFAwTFgUBHAs2FwAMGjhHMxgfEAZ/bzU7JBUcHSkGBAAYc1hoczIBLAIAGhwEEBcHKAocSUZSYSQdPBUGHCYbKgURNBIdT0dofhYFDA07DA0GJhsqBRFVRmhpOwsdKz8MFBYkFwYEFzQ/DBoYABcxCgExH0lKfm8qHAwAGAQJHV9UU0Jofh4PFisWEgIAATMwBwFVRlVueDEbOwocOBcWMRcSFS0PIhYfASAdEBorR1B0eSACARwgNgYAOAcRAhEOIDYIDhwHJgwHCwBzWmhzPQoRHwQYCwIIHDIRFxMGHwsCBhIWESAdEBorR1d0eS0CAAEgNgYAOAcRAhEOIDYIDhwHJgwHCwBzWGhzJgsPHQYfEQQXFBIJMAYEEzonAA8WCU9AaH4KBQkWEA4rExcQDB8EHhYpBgQAGHNYaHMmCw8dBh8LAggcMhEXEwYfEw4THB9JV39vITEHChoYMA0eDBkrDgE1FhMGHklBUmEnFgAWNxsIERoKFgBfVFtCaH4dBBYKJwwOFysbLQYEFV9XV0Jofh0EFgonDA4XLRUtD0lKRVVueA==
+  key: secret_key

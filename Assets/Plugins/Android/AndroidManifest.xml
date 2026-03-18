@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+  <!-- 인터넷 및 네트워크 상태 권한 -->
+  <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+  <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+  <uses-permission android:name="com.android.vending.BILLING" />
+  <application android:allowBackup="false" android:fullBackupContent="false">
+    <!-- Unity 메인 액티비티 -->
+	  <activity
+	  android:name="com.yourcompany.googlelogin.CustomUnityActivity"
+	  android:theme="@style/UnityThemeSelector"
+	  android:launchMode="singleTask"
+	  android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout|uiMode"
+	  android:screenOrientation="sensorLandscape"
+	  android:resizeableActivity="false">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+      <meta-data android:name="unityplayer.UnityActivity" android:value="true" />
+    </activity>
+    <!-- Google Play Services 버전 정보 추가 -->
+    <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
+    <service android:name="com.google.firebase.messaging.FirebaseMessagingService" android:exported="false">
+      <intent-filter>
+        <action android:name="com.google.firebase.MESSAGING_EVENT" />
+      </intent-filter>
+    </service>
+    <meta-data android:name="com.google.firebase.messaging.default_notification_channel_id" android:value="default_channel_id" />
+    <receiver android:name="com.google.firebase.iid.FirebaseInstanceIdInternalReceiver" android:exported="false" />
+  </application>
+</manifest>

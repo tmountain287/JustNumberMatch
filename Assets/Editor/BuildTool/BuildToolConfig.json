@@ -1,0 +1,20 @@
+{
+    "buildName": "justonematch",
+    "androidBundleVersion": "1.0",
+    "androidVersionCode": 17,
+    "buildAsAppBundle": true,
+    "iosBundleVersion": "1.0",
+    "iosBuildNumber": "1",
+    "openAfterBuild": true,
+    "cleanBuild": false,
+    "defineSymbols": [
+        {
+            "symbol": "TEST",
+            "enabled": true
+        },
+        {
+            "symbol": "SERVICE",
+            "enabled": false
+        }
+    ]
+}

@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a076924e9a82334daf6141c371965f2, type: 3}
+  m_Name: Encrypted_productcatalogtable
+  m_EditorClassIdentifier: Assembly-CSharp::EncryptedCSVData
+  fileName: productcatalogtable
+  encryptedData: NAoMFQkRFi9JOAMVDxcsMHM7FxYXEAAGMQ0vDkkpAQwAF0k2MAUQCl81ERcIHSoGSTAHAA4mHAQ6RzMYHxAGXjYVMw4zGB8QBn9vFTsYOgsWCAwEAFg+DxYmAQAOHRMRcygKFwAQDhMHGDpHQU9dXFpSSURzWkkrFggMBAA1OxhJSV9oaRUKGDs0UElDSQQdCRAAXlVJXyYMHBYBMgoHFRZJR0JLTWZLSUlfVU81Chg7R1BJQ0lTf28TMAcBJkBVU0JJEzAHASZAVVNCSTcwBRYMHgQBHgBYe19LQEpFT0NVWG9HIhYfAU9BVURvR1ROfm8EHQkQAFxVSUNJBB0JEABcVUlDSSAdCwcqBgQbHwBPVlxaZlJFVUFVT0JJMzAHAVVEVVNCSUZnZm8eHAkHLVRBb1tVVRQKDxY6RWpbVUlfJgwcFgEyCgcVFklHQ1xaZlJFVUBVT0JJMzAHAVVCUFNCVVhsWGhzFAoPFjpAaltVSV8CDB4BK2teVUlDSSAdCwcqBgQbHwBPVlFNcVJcWV9QU15VWBgECR1fUVZCVURzX1F0eQIMHgErbltVSUNVTxUKGDs0VElDVVNCSTcwBRYMHgQBHgBYe1JcV0pcQ15URG9HVVU0Cg8WSUVvW1VJQ0lWQmh+
+  key: secret_key

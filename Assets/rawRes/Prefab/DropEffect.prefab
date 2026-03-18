@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3406425053950024445
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 705676071964360015}
+  - component: {fileID: 1466154767633599226}
+  - component: {fileID: 8004202403475061957}
+  m_Layer: 5
+  m_Name: DropEffect
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &705676071964360015
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3406425053950024445}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1466154767633599226
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3406425053950024445}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bffc59d7db3eb04e8c33ad25651cd0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DropEffect
+  objectPool: {fileID: 8004202403475061957}
+  spreadRadius: 120
+  jumpDuration: 0.2
+  baseMoveDuration: 0.3
+  moveDurationRandomRange: 0.05
+  curveStrengthFactor: 0.2
+  verticalArcFactor: 0.1
+  audioClip: {fileID: 8300000, guid: b043843e2bd18d24fac10173fe1e2486, type: 3}
+--- !u!114 &8004202403475061957
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3406425053950024445}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd365e4203c5e334da2c560ee0d1743f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Util.ObjectPool
+  prefab: {fileID: 1388483588667860093, guid: f579e35e32748b1479c7876baa68acfe, type: 3}
+  initialPoolSize: 10

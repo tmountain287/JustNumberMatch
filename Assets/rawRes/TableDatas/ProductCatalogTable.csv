@@ -1,0 +1,8 @@
+﻿GoogleID,AppleID,ProductType,Price,Bonus,Premium,ItemType,Value,SaleValue
+ads_remove,ads_remove,Consumable,$6.99 ,0,1,RemoveAds,0,
+gold_500,gold_500,Consumable,$0.99 ,0,0,Gold,500,0
+gold_3000,gold_3000,Consumable,$4.99 ,10,0,Gold,3000,17
+gold_7000,gold_7000,Consumable,$9.99 ,20,0,Gold,7000,28
+gold_15000,gold_15000,Consumable,$19.99 ,30,0,Gold,15000,33
+gold_45000,gold_45000,Consumable,$49.99 ,50,0,Gold,45000,44
+gold_100000,gold_100000,Consumable,$99.99 ,100,0,Gold,100000,50

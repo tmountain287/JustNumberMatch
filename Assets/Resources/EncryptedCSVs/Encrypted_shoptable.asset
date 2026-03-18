@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a076924e9a82334daf6141c371965f2, type: 3}
+  m_Name: Encrypted_shoptable
+  m_EditorClassIdentifier: Assembly-CSharp::EncryptedCSVData
+  fileName: shoptable
+  encryptedData: OiFPMQQAOgwKCwoxGgIAWBYfABQnHBMXSSI+BxAcXysGFwE9Kw4ILQoVBl4rEToPMxgfEAZeNhUzDmhzQkkqBgAZcyMMFwdJUl4iGzMPSUtDVU9CaH5tRywNFghPOgwaK0dQVTQKDxZJTW9bSUhDaGlBST0rDghVOwwNBklFb0ciFh8BT0NSRG9HVEx+b1deLAA6BkkxGgsXXlZEcywKFRdJV0pVRHNZVXR5UE87EREyRzEQHgAiBhEVPAAxEBAOBgZJRXMsChUXSVFCVVhvZm9PXywXFwhYCwIIHDIRFxMGHwsCBhIWEU9DVVgYBAkdX1RbQlVYbltoc0RJKgYAGXMoDRgdAgZeVFgYBAkdX1dTQklEUmFdVToRBh9JNzcKCx4WSVJCSTMwBwFVQl1TQklFb2Zv
+  key: secret_key
