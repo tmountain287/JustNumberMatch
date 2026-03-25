@@ -1,7 +1,7 @@
 {
-    "buildName": "justonematch",
-    "androidBundleVersion": "1.0",
-    "androidVersionCode": 17,
+    "buildName": "choigosugostop",
+    "androidBundleVersion": "1.22",
+    "androidVersionCode": 85,
     "buildAsAppBundle": true,
     "iosBundleVersion": "1.0",
     "iosBuildNumber": "1",
@@ -9,11 +9,11 @@
     "cleanBuild": false,
     "defineSymbols": [
         {
-            "symbol": "TEST",
+            "symbol": "SERVICE",
             "enabled": true
         },
         {
-            "symbol": "SERVICE",
+            "symbol": "TEST",
             "enabled": false
         }
     ]

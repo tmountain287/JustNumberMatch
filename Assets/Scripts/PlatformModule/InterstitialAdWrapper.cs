@@ -79,6 +79,7 @@ public class InterstitialAdWrapper  : BaseAdWrapper
         }
     }
 
+
     protected override void OnAdClosed()
     {
         UnityMainThreadDispatcher.Instance.Enqueue(() =>

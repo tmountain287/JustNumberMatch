@@ -1,5 +1,4 @@
-using Common.Manager;
-using GoogleMobileAds.Api;
+﻿using GoogleMobileAds.Api;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -59,6 +58,7 @@ public class GoogleAdManager : MonoSingletonDont<GoogleAdManager>
                 isInitializing = true;
                 MobileAds.Initialize(initStatus =>
                 {
+                    Debug.Log("AdMob Initialize done");
                     isInitialized = true;
                     interstitialAd = new InterstitialAdWrapper(interstitialAdUnitId, () => onOpenEvent?.Invoke(), () => onCloseEvent?.Invoke());
                     rewardedAd = new RewardAdWrapper(rewardedAdUnitId, () => onOpenEvent?.Invoke(), () => onCloseEvent?.Invoke());
@@ -79,17 +79,16 @@ public class GoogleAdManager : MonoSingletonDont<GoogleAdManager>
         onOpenEvent?.Invoke();
     });
 
-    public void ShowRewardedAd(Action<string> onSuccess = null, Action onStop = null, Action<string> onFail = null, string placement = "unknown")
+    public void ShowRewardedAd(Action<string> onSuccess = null, Action onStop = null, Action<string> onFail = null)
     {
-        StartCoroutine(ShowRewardedAdCoroutine((adater) => { onSuccess?.Invoke(adater); }, () => { onStop?.Invoke(); }, (error) => { onFail?.Invoke(error); }, placement));
+        StartCoroutine(ShowRewardedAdCoroutine((adater) => { onSuccess?.Invoke(adater); }, () => { onStop?.Invoke(); }, (error) => { onFail?.Invoke(error); }));
     }
 
-    private IEnumerator ShowRewardedAdCoroutine(Action<string> onSuccess, Action onStop, Action<string> onFail, string placement)
+    private IEnumerator ShowRewardedAdCoroutine(Action<string> onSuccess, Action onStop, Action<string> onFail)
     {
         if (Application.internetReachability == NetworkReachability.NotReachable)
         {
-            string message = LocalizationManager.Instance.GetText("OfflineAd");
-            onFail?.Invoke(message);
+            onFail?.Invoke("온라인 상태에서만\n광고 보기가 가능합니다.\n네트워크 연결 후\n다시 시도해 주세요.");
             yield break;
         }
 
@@ -105,19 +104,16 @@ public class GoogleAdManager : MonoSingletonDont<GoogleAdManager>
 
         if (rewardedAd != null)
         {
-            GameAnalyticsHelper.LogRewardedAdStart(placement ?? "unknown");
             rewardedAd?.ShowAd(() =>
             {
                 onOpenEvent?.Invoke();
             },
             (adapter) =>
             {
-                GameAnalyticsHelper.LogRewardedAdComplete(placement ?? "unknown", "gold");
                 onSuccess?.Invoke(adapter);
             },
             () =>
             {
-                GameAnalyticsHelper.LogRewardedAdSkip(placement ?? "unknown");
                 onStop?.Invoke();
             },
             (error) =>
@@ -127,8 +123,7 @@ public class GoogleAdManager : MonoSingletonDont<GoogleAdManager>
         }
         else
         {
-            string message = LocalizationManager.Instance.GetText("FailAdLoad");
-            onFail?.Invoke(message);
+            onFail?.Invoke("광고 초기화 안됨");
         }
     }
 }

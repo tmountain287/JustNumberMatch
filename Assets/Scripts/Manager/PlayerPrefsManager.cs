@@ -7,22 +7,26 @@ namespace Common.Manager
 {
     public enum PrefsKey
     {
-        Language,
+        //Language,
         //ChipType,
         //AutoScreen,
         //Screen,
         BGM,
         FX_Sound,
+        //Emoji,
         PUSH,
-        VIBRATION,
+        GAME_SPEED,
+        HANDS_SORT,
+        BOARD_SORT,
+        MISSION,
     }
 
     public class PlayerPrefsInfo
     {
-        public float Value { get; set; }
+        public int Value { get; set; }
         public UnityEvent OnChangeDataEvent { get; set; } = new();
 
-        public PlayerPrefsInfo(float _value)
+        public PlayerPrefsInfo(int _value)
         {
             Value = _value;
         }
@@ -32,28 +36,27 @@ namespace Common.Manager
     {        
         private Dictionary<PrefsKey, PlayerPrefsInfo> playerPrefsInfoDict = new();
 
-        public PlayerPrefsInfo GetPlayerPrefsInfo(PrefsKey _key, float _value = 0)
+        public PlayerPrefsInfo GetPlayerPrefsInfo(PrefsKey _key, int _value = 0)
         {
             if(!playerPrefsInfoDict.ContainsKey(_key))
             {
-                float value = PlayerPrefs.GetFloat(_key.ToString(), _value);
+                int value = PlayerPrefs.GetInt(_key.ToString(), _value);
                 playerPrefsInfoDict.Add(_key, new(value));
             }
 
             return playerPrefsInfoDict[_key];
         }
-       
 
-        public float GetPlayerPrefsValue(PrefsKey _key, float _value = 0)
+        public int GetPlayerPrefsValue(PrefsKey _key, int _value = 0)
         {
             return GetPlayerPrefsInfo(_key, _value).Value;
         }
 
-        public void SetPlayerPrefsInfo(PrefsKey _key, float _value = 0)
+        public void SetPlayerPrefsInfo(PrefsKey _key, int _value = 0)
         {
             if (!playerPrefsInfoDict.ContainsKey(_key))
             {
-                float value = PlayerPrefs.GetFloat(_key.ToString(), _value);
+                int value = PlayerPrefs.GetInt(_key.ToString(), _value);
                 playerPrefsInfoDict.Add(_key, new(value));
             }
             else
@@ -61,7 +64,7 @@ namespace Common.Manager
                 playerPrefsInfoDict[_key].Value = _value;
             }
 
-            PlayerPrefs.SetFloat(_key.ToString(), _value);
+            PlayerPrefs.SetInt(_key.ToString(), _value);
             PlayerPrefs.Save();
 
             playerPrefsInfoDict[_key].OnChangeDataEvent?.Invoke();

@@ -10,7 +10,10 @@ public class PlatformLoginReceiver : MonoSingletonDont<PlatformLoginReceiver>
     private PlatformLoginBase platformLogin = new PlatformLoginGoogleStandard();
 #endif
 
-    public string Token { get; set; }
+    public string Token { get; private set; }
+    public string UID { get; private set; }
+    public string Email { get; private set; }
+    public string Name { get; private set; }
 
     public bool IsLinking { get => !string.IsNullOrEmpty(PlayerPrefs.GetString("UserUID", "")); }
 
@@ -63,4 +66,33 @@ public class PlatformLoginReceiver : MonoSingletonDont<PlatformLoginReceiver>
     {
 
     }
+
+    public void DeleteUserInfo()
+    {
+        Token = "";
+        UID = "";
+        Email = "";
+        Name = "";
+
+        SaveUserInfo();
+    }
+
+    public void SaveUserInfo(string _token, string _uid, string _email, string _name)
+    {
+        Token = _token;
+        UID = _uid;
+        Email = _email;
+        Name = _name;
+        SaveUserInfo();
+    }
+
+    private void SaveUserInfo()
+    {
+        PlayerPrefs.SetString("UserUID", UID);
+        PlayerPrefs.SetString("UserEmail", Email);
+        PlayerPrefs.SetString("UserName", Name);
+        PlayerPrefs.Save();
+    }
+
+
 }

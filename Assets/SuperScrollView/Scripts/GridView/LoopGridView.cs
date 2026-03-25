@@ -133,17 +133,6 @@ namespace SuperScrollView
         bool mNeedReplaceScrollbarEventHandler = true;
         int mCurCreatingItemIndex = -1;
 
-
-
-        public bool IsListViewInited
-        {
-            get
-            {
-                return mListViewInited;
-            }
-        }
-
-
         public List<GridViewItemPrefabConfData> ItemPrefabDataList
         {
             get
@@ -345,6 +334,10 @@ namespace SuperScrollView
             }
             if(itemCount == mItemTotalCount)
             {
+                if (resetPos)
+                {
+                    MovePanelToItemByRowColumn(0, 0);
+                }
                 return;
             }
             mCurSnapData.Clear();
@@ -369,14 +362,14 @@ namespace SuperScrollView
         }
 
        //fetch or create a new item form the item pool.
-        public LoopGridViewItem NewListViewItem(string itemPrefabName)
+        public LoopGridViewItem NewListViewItem(string itemPrefabName, bool _isOn = true)
         {
             GridItemPool pool = null;
             if (mItemPoolDict.TryGetValue(itemPrefabName, out pool) == false)
             {
                 return null;
             }
-            LoopGridViewItem item = pool.GetItem(mCurCreatingItemIndex);
+            LoopGridViewItem item = pool.GetItem(mCurCreatingItemIndex, _isOn);
             RectTransform rf = item.GetComponent<RectTransform>();
             rf.SetParent(mContainerTrans);
             rf.localScale = Vector3.one;
@@ -501,6 +494,7 @@ namespace SuperScrollView
             get { return mCurSnapNearestItemRowColumn; }
         }
 
+        public bool IsListViewInited { get => mListViewInited;}
 
         //force to update the mCurSnapNearestItemRowColumn value
         public void ForceSnapUpdateCheck()
@@ -593,19 +587,6 @@ namespace SuperScrollView
             ForceToCheckContentPos();
             RecycleAllItem();
             UpdateGridViewContent();
-        }
-
-        //update the gridview content at once. You can call this method to let the LoopGridView to create all the items within the ScrollRect viewport immediately.
-        public void ForceUpdateGridViewAtOnce()
-        {
-            if (mListViewInited == false)
-            {
-                return;
-            }
-            UpdateSnapMove();
-            ForceToCheckContentPos();
-            UpdateGridViewContent();
-            ClearAllTmpRecycledItem();
         }
 
         public virtual void OnBeginDrag(PointerEventData eventData)
@@ -768,7 +749,7 @@ namespace SuperScrollView
         }
 
         //set mGridFixedType and mFixedRowOrColumnCount at runtime
-        public void SetGridFixedGroupCount(GridFixedType fixedType,int count)
+        public void SetGridFixedGroupCount(GridFixedType fixedType,int count, bool refresh = true)
         {
             if(mGridFixedType == fixedType && mFixedRowOrColumnCount == count)
             {
@@ -776,6 +757,10 @@ namespace SuperScrollView
             }
             mGridFixedType = fixedType;
             mFixedRowOrColumnCount = count;
+            if(!refresh)
+            {
+                return;
+            }
             UpdateColumnRowCount();
             UpdateContentSize();
             if (mItemGroupList.Count == 0)
@@ -871,7 +856,6 @@ namespace SuperScrollView
                 mItemPoolList[i].ClearTmpRecycledItem();
             }
         }
-
 
         public void RecycleAllItem()
         {

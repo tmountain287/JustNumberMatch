@@ -1,0 +1,9 @@
+Jjok.png
+size:416,140
+filter:Linear,Linear
+Jjok/1
+bounds:2,2,135,135
+Jjok/2
+bounds:139,2,135,135
+Jjok/3
+bounds:276,2,135,135

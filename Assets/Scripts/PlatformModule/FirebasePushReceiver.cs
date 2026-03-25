@@ -1,4 +1,4 @@
-using Firebase;
+﻿using Firebase;
 using Firebase.Messaging;
 using UnityEngine;
 
@@ -31,9 +31,6 @@ public class FirebasePushReceiver : MonoSingletonDont<FirebasePushReceiver>
 
     private void OnMessageReceived(object sender, MessageReceivedEventArgs e)
     {
-        string messageId = e?.Message?.MessageId ?? "";
-        string campaign = e?.Message?.Data?.ContainsKey("campaign") == true ? e.Message.Data["campaign"] : null;
-        GameAnalyticsHelper.LogPushReceived(messageId, campaign);
         Debug.Log($"[FCM] Push received from: {e.Message.From}");
         if (e.Message.Notification != null)
         {

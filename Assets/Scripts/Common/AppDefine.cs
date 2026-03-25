@@ -7,7 +7,7 @@ public static class AppDefine
 #if UNITY_ANDROID 
     public static string STORE_APP_URL = $"https://play.google.com/store/apps/details?id={Application.identifier}";
 #elif UNITY_IOS
-    public static string STORE_APP_URL = "https://apps.apple.com/app/6749435135";
+    public static string STORE_APP_URL = "https://apps.apple.com/app/id6749435135";
 #else
     public static string STORE_APP_URL = $"https://play.google.com/store/apps/details?id={Application.identifier}";
 #endif

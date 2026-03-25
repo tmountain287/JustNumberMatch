@@ -3,7 +3,7 @@ using Common.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace JustOneMatch.UI
+namespace Gostop.UI
 {
     public class ExitPopup : BasePopup
     {

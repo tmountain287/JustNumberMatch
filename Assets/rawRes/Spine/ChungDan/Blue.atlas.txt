@@ -1,0 +1,15 @@
+Blue.png
+size:656,552
+filter:Linear,Linear
+Blue/01
+bounds:461,180,191,110
+Blue/02
+bounds:248,292,256,256
+Blue/03
+bounds:506,311,145,237
+Blue/04
+bounds:2,2,188,238
+Blue/05
+bounds:2,242,244,306
+Blue/06
+bounds:248,36,211,254

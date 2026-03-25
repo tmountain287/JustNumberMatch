@@ -2,24 +2,17 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Common.UI;
-using System;
 
-namespace JustOneMatch.UI
+namespace Gostop.UI
 {
     public class NickNameChangePopup : BasePopup
     {
         [SerializeField] private InputField inputField = null;
         [SerializeField] private Button changeButton = null;
 
-        private Action closeAction = null;
-
         protected override void Start()
         {
-            closeButton.onClick.AddListener(() =>
-            {
-                ClosePopup(closeAction);
-            });
-
+            base.Start();
             inputField.onValidateInput += OnValueChanged;
             changeButton.onClick.AddListener(() =>
             {
@@ -29,20 +22,27 @@ namespace JustOneMatch.UI
                 }
                 else
                 {
-                    if(TableDataManager.Instance.TableSlangData.ContainsSlang(inputField.text))
+                    var result = GetInvalidChar(inputField.text);
+                    if (result != null)
                     {
-                        PopupManager.Instance.OpenMessageBoxPopup("", LocalizationManager.Instance.GetText("inappropriate characters"));
+                        PopupManager.Instance.OpenMessageBoxPopup("알림", "<color=#FF6600>유효하지 않은 문자</color>가\n포함되었습니다.");
+                    }
+                    else if(TableDataManager.Instance.TableSlangData.ContainsSlang(inputField.text))
+                    {
+                        PopupManager.Instance.OpenMessageBoxPopup("알림", "<color=#FF6600>적절하지 않은 문자</color>가\n포함되었습니다.");
                     }
                     else
-                    {                        
+                    {
+                        InGameManager.Instance.SendReqNickNameChange(inputField.text);
                         UserDataManager.NickName = inputField.text;
                         ClosePopup(() =>
                         {
                             UIManager.Instance.ShowLoading();
                             UserDataManager.Save(true, () =>
                             {
+                                _ = NetworkManager.Instance.UpdtateNickName(UserDataManager.NickName);
                                 UIManager.Instance.HideLoading();
-                                PopupManager.Instance.OpenMessageBoxPopup("", LocalizationManager.Instance.GetText("NicknameChanged"));
+                                PopupManager.Instance.OpenMessageBoxPopup("알림", "<color=#FF6600>별명</color>이 변경되었습니다.");
                             });
                         });
                     }                        
@@ -98,9 +98,8 @@ namespace JustOneMatch.UI
             return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
         }
 
-        public void Initialize(Action _closeAction)
+        public void Initialize()
         {
-            closeAction = _closeAction;
             inputField.text = UserDataManager.NickName;
         }
     }

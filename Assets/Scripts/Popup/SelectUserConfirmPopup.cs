@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace JustOneMatch.UI
+namespace Gostop.UI
 {
     public class SelectUserConfirmPopup : BasePopup
     {
@@ -21,9 +21,8 @@ namespace JustOneMatch.UI
             base.Start();
             cancleButton.onClick.AddListener(() =>
             {
-                ClosePopup(()=>
-                PopupManager.Instance.OpenPopup<SelectUserPopup>().Initialize());
-                
+                ClosePopup();
+                PopupManager.Instance.OpenPopup<SelectUserPopup>().Initialize();
             });
 
             confirmButton.onClick.AddListener(() =>
@@ -39,14 +38,14 @@ namespace JustOneMatch.UI
 
             if (!_isCurrent)
             {
-                beforePanel.SetPanel(false, _userData);
+                beforePanel.SetPanel(_userData);
             }
             else
             {
-                currentPanel.SetPanel(true, _userData);
+                currentPanel.SetPanel(_userData);
             }
 
-            onConfirmClick = () =>
+            onConfirmClick = ()=>
             {
                 AsyncSaveDataMerge(_isCurrent, _userData, _onComplete);
             };
@@ -55,13 +54,10 @@ namespace JustOneMatch.UI
         private async void AsyncSaveDataMerge(bool _isCurrent, UserData _userData, Action<bool> _onComplete)
         {
             UIManager.Instance.ShowLoading();
-            string data = SecurePlayerPrefs.Encrypt(_userData);
-            await NetworkManager.Instance.ApplyOverwriteAsync(data);
+            await NetworkManager.Instance.SaveRecordMerge(_userData);
             UIManager.Instance.HideLoading();
-            ClosePopup(()=>
-            {
-                PopupManager.Instance.OpenPopup<SelectUserSavePopup>().Initialize(_isCurrent, _userData, _onComplete);
-            });           
+            ClosePopup();
+            PopupManager.Instance.OpenPopup<SelectUserSavePopup>().Initialize(_isCurrent, _userData, _onComplete);
         }
     }
 }

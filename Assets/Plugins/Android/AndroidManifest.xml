@@ -7,13 +7,7 @@
   <uses-permission android:name="com.android.vending.BILLING" />
   <application android:allowBackup="false" android:fullBackupContent="false">
     <!-- Unity 메인 액티비티 -->
-	  <activity
-	  android:name="com.yourcompany.googlelogin.CustomUnityActivity"
-	  android:theme="@style/UnityThemeSelector"
-	  android:launchMode="singleTask"
-	  android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout|uiMode"
-	  android:screenOrientation="sensorLandscape"
-	  android:resizeableActivity="false">
+    <activity android:name="com.yourcompany.googlelogin.CustomUnityActivity" android:theme="@style/UnityThemeSelector" android:launchMode="singleTask" android:configChanges="orientation|screenSize|keyboardHidden">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />

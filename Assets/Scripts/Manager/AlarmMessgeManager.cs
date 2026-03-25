@@ -11,14 +11,14 @@ namespace Common.Manager
         [SerializeField] private ObjectPool alarmMessageBoxPool = null;
         [SerializeField] private Transform pivot = null;
 
-        private List<MissionAlarmBox> alarmMessageBoxList = new();
+        private List<AlarmMessageBox> alarmMessageBoxList = new();
 
         private void Awake()
         {
             alarmMessageBoxPool.CreateObjectPool();
         }
 
-        public void OnMessage(MissionData _data)
+        public void OnMessage(string _message)
         {
             if(alarmMessageBoxList.Count > 0)
             {
@@ -29,14 +29,14 @@ namespace Common.Manager
                 }
             }
 
-            MissionAlarmBox messageBox = alarmMessageBoxPool.GetObjectFromPool<MissionAlarmBox>();
+            AlarmMessageBox messageBox = alarmMessageBoxPool.GetObjectFromPool<AlarmMessageBox>();
 
             alarmMessageBoxList.Add(messageBox);
 
             messageBox.transform.SetParent(pivot);
             messageBox.transform.localPosition = new Vector3(0, 300, 0);
             messageBox.transform.SetAsFirstSibling();
-            messageBox.OnAlarm(_data, () =>
+            messageBox.OnAlarm(_message, () =>
             {
                 alarmMessageBoxList.Remove(messageBox);
                 alarmMessageBoxPool.ReturnObjectToPool(messageBox.gameObject);

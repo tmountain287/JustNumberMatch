@@ -7,10 +7,7 @@ namespace Common.UI
     {
         [SerializeField] private bool autoPlay = false;
         [SerializeField] private AudioClip inBgm = null;
-
-        public AudioClip InBgm { get => inBgm; set => inBgm = value; }
-
-        // [SerializeField] private AudioClip outBgm = null;
+        [SerializeField] private AudioClip outBgm = null;
 
         private void OnEnable()
         {
@@ -18,15 +15,15 @@ namespace Common.UI
                 PlayBgm();
         }
 
-        //private void OnDisable()
-        //{
-        //    if(SoundManager.Instance != null)
-        //        SoundManager.Instance.PlayBgm(outBgm);
-        //}
+        private void OnDisable()
+        {
+            if(SoundManager.Instance != null)
+                SoundManager.Instance.PlayBgm(outBgm);
+        }
 
         public void PlayBgm()
         {
-            SoundManager.Instance.PlayBgm(InBgm);
+            SoundManager.Instance.PlayBgm(inBgm);
         }
     }
 }

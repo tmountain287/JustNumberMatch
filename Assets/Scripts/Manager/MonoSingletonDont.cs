@@ -3,51 +3,45 @@
 public class MonoSingletonDont<T> : MonoBehaviour where T : MonoBehaviour
 {
     private static T instance;
-    private static bool isQuitting;
-
     public static T Instance
     {
         get
         {
-            if (isQuitting) return null;
-
             if (instance == null)
             {
-                instance = FindFirstObjectByType<T>();
+                instance = FindObjectOfType<T>();
 
                 if (instance == null)
                 {
+                    // Resources 폴더에서 prefab 로드
                     GameObject prefab = Resources.Load<GameObject>(typeof(T).Name);
-                    GameObject obj;
-
                     if (prefab != null)
                     {
-                        obj = Object.Instantiate(prefab);
-                        obj.name = typeof(T).Name;
+                        GameObject obj = Instantiate(prefab);
                         instance = obj.GetComponent<T>();
+                        obj.name = typeof(T).Name;
+                        DontDestroyOnLoad(obj);
                     }
                     else
                     {
-                        obj = new GameObject(typeof(T).Name);
+                        // fallback: 빈 오브젝트라도 생성
+                        GameObject obj = new GameObject(typeof(T).Name);
                         instance = obj.AddComponent<T>();
+                        DontDestroyOnLoad(obj);
                     }
-
-                    Object.DontDestroyOnLoad(obj);
                 }
             }
-
             return instance;
         }
     }
 
+    public static T GetInstance()
+    {
+        return instance;
+    }
+
     protected virtual void Awake()
     {
-        if (isQuitting)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
         if (instance == null)
         {
             instance = this as T;
@@ -59,20 +53,10 @@ public class MonoSingletonDont<T> : MonoBehaviour where T : MonoBehaviour
         }
     }
 
-    protected virtual void OnApplicationQuit()
+#if UNITY_EDITOR
+    private void OnApplicationQuit()
     {
-        isQuitting = true;
+        DestroyImmediate(gameObject);
     }
-
-    protected virtual void OnDestroy()
-    {
-        if (instance == this) instance = null;
-    }
-
-    // ✅ attribute 제거. 대신 외부에서 호출 가능하게만 해둠.
-    internal static void ResetStaticsForDomainReloadDisabled()
-    {
-        instance = null;
-        isQuitting = false;
-    }
+#endif
 }

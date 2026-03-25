@@ -1,0 +1,14 @@
+Go7.png
+size:484,868
+filter:Linear,Linear
+Go/02
+bounds:248,224,229,214
+offsets:0,1,230,215
+Go/Glow
+bounds:47,440,434,423
+offsets:1,1,436,425
+Go/Go7
+bounds:47,189,199,249
+offsets:44,0,256,256
+Go/Line
+bounds:2,2,43,861

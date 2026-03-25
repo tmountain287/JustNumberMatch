@@ -1,5 +1,5 @@
 ﻿using Common.UI;
-using JustOneMatch.UI;
+using Gostop.UI;
 using Spine;
 using System;
 using System.Collections;
@@ -52,8 +52,8 @@ namespace Common.Manager
             if (popup != null)
             {
                 if(!popup.AllowDuplicates && IsOpenPopup(popup))
-                {                    
-                    return popup;
+                {
+                    return null;
                 }
 
                 _initialize?.Invoke(popup);
@@ -72,13 +72,14 @@ namespace Common.Manager
                 else
                 {
                     popupStackDic.Add(popup.popupType, new List<BasePopup> { popup });
-                }                
+                }
+                
             }
-          
+
             return popup;
         }
 
-        public bool ClosePopup(PopupType _popupType = PopupType.NONE, Action _action = null)
+        public bool ClosePopup(PopupType _popupType, Action _action = null)
         {
             if (!popupStackDic.ContainsKey(_popupType))
             {
@@ -91,13 +92,8 @@ namespace Common.Manager
                 return false;
             if (!basePopups[^1].CanClose)
                 return false;
-
-            basePopups[^1].Close(() =>
-            {
-                basePopups.RemoveAt(basePopups.Count - 1);
-                _action?.Invoke();
-            });
-
+            basePopups[^1].Close(()=>_action?.Invoke());
+            basePopups.RemoveAt(basePopups.Count - 1);
             return true;
         }
 
@@ -204,11 +200,8 @@ namespace Common.Manager
                     } 
                     else if (basePopups[^1].CanBackButton && basePopups[^1].CanClose)
                     {
-                        basePopups[^1].Close(()=>
-                        {
-                            basePopups.RemoveAt(basePopups.Count - 1);
-                        });
-                        
+                        basePopups[^1].Close();
+                        basePopups.RemoveAt(basePopups.Count - 1);
                     }
 
                 }                

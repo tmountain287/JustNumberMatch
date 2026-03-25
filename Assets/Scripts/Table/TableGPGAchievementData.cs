@@ -1,13 +1,16 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 public enum GPGAchievementType
 {
-    StageClear = 0,
-    ModeClear = 1,
-    ModeUnlock = 2,
-    Level = 3,
+    Level = 0,
+    BigWin = 1,
+    PlayCount = 2,
+    WinCount = 3,
+    WinStreak = 4,
+    Money = 5,
+    Character = 6
 }
 
 [System.Serializable]
@@ -16,12 +19,11 @@ public class GPGAchievementData
     public string id;
     public string name;
     public GPGAchievementType achievementType;
-    public DifficultyType difficultyType;
     public long value;
 
     public GPGAchievementData(string[] row)
     {
-        if (row.Length >= 6)
+        if (row.Length >= 5)
         {
 #if UNITY_IOS
             id = row[1].Trim();
@@ -37,20 +39,14 @@ public class GPGAchievementData
             else
             {
                 Debug.LogWarning($"Invalid type value: {row[3]} for CharacterTableData ID {id}");
-                achievementType = GPGAchievementType.StageClear; // 기본값으로 처리
+                achievementType = GPGAchievementType.Level; // 기본값으로 처리
             }
 
-            if (int.TryParse(row[4], out int difficultyValue) && System.Enum.IsDefined(typeof(DifficultyType), difficultyValue))
+            if (!long.TryParse(row[4], out value))
             {
-                difficultyType = (DifficultyType)difficultyValue;
+                //value = long.MaxValue;
+                Debug.LogError($"long 변환 실패: 입력값 = {row[4]} (index=4)");
             }
-            else
-            {
-                Debug.LogWarning($"Invalid difficulty value: {row[4]} for GPGAchievementData ID {id}");
-                difficultyType = DifficultyType.Easy; // 기본값으로 처리
-            }
-
-            long.TryParse(row[5], out value);
         }
     }
 }

@@ -90,10 +90,3 @@ TextureImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 86572
-  packageName: UGUI Super ScrollView
-  packageVersion: 2.5.5
-  assetPath: Assets/SuperScrollView/Demo/Texture/icon/icon_refresh.png
-  uploadId: 775568

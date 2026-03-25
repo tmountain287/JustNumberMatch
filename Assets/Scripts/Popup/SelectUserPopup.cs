@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace JustOneMatch.UI
+namespace Gostop.UI
 {
     public class SelectUserPopup : BasePopup
     {
@@ -27,16 +27,16 @@ namespace JustOneMatch.UI
 
         public void Initialize()
         {
-            beforePanel.SetPanel(false, beforeData, () =>
+            beforePanel.SetPanel(beforeData, ()=>
             {
-                ClosePopup(() =>
-                    PopupManager.Instance.OpenPopup<SelectUserConfirmPopup>().Initialize(false, beforeData, onComplete));
+                ClosePopup();
+                PopupManager.Instance.OpenPopup<SelectUserConfirmPopup>().Initialize(false, beforeData, onComplete);
             });
 
-            currentPanel.SetPanel(true, currentData, () =>
+            currentPanel.SetPanel(currentData, () =>
             {
-            ClosePopup(() =>
-                PopupManager.Instance.OpenPopup<SelectUserConfirmPopup>().Initialize(true, currentData, onComplete));
+                ClosePopup();
+                PopupManager.Instance.OpenPopup<SelectUserConfirmPopup>().Initialize(true, currentData, onComplete);
             });
         }
     }

@@ -11,21 +11,13 @@ namespace Common.UI
             NONE,
             INTRO,
             LOBBY,
-            STAGE,
-            TIMEATTACT,
             GAME,
             DEBUG,
         }
 
         [SerializeField] private Type type = Type.NONE;
-        [SerializeField] private TopUI topUI = null;
 
-        public Type UIType { get => type;}     
-        
-        protected virtual void OnEnable()
-        {
-            UIManager.Instance.TopUI = topUI;
-        }
+        public Type UIType { get => type;}        
 
         public void SetUI(Type _type)
         {

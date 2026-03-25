@@ -1,0 +1,12 @@
+NoGameMoney.png
+size:852,336
+filter:Linear,Linear
+01
+bounds:544,2,250,148
+offsets:3,2,256,152
+02
+bounds:2,2,540,148
+offsets:4,5,548,158
+04
+bounds:2,152,846,181
+offsets:1,2,848,184

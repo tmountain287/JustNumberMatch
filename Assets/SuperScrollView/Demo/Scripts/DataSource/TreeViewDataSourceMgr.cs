@@ -71,33 +71,6 @@ namespace SuperScrollView
             return itemData.AddNewItemChild(itemIndex, AddToBeforeChildIndex);            
         }
 
-        public TreeViewItemData<T> AddNewItem(int addToBeforeIndex)
-        {
-            if (addToBeforeIndex < 0 || addToBeforeIndex > mItemDataList.Count)
-            {
-                addToBeforeIndex = 0;
-            }
-            if (addToBeforeIndex > mItemDataList.Count)
-            {
-                addToBeforeIndex = mItemDataList.Count;
-            }
-            TreeViewItemData<T> itemData = new TreeViewItemData<T>();
-            mItemDataList.Insert(addToBeforeIndex, itemData);
-            itemData.RefreshItemDataList(addToBeforeIndex, 0);
-            return itemData;
-        }
-
-
-        public bool RemoveItem(int itemIndex)
-        {
-            if (itemIndex < 0 || itemIndex >= mItemDataList.Count)
-            {
-                return false;
-            }
-            mItemDataList.RemoveAt(itemIndex);
-            return true;
-        }
-
 
         public void AddItemChild(int itemIndex, int AddToBeforeChildIndex,T itemData)
         {
@@ -109,14 +82,14 @@ namespace SuperScrollView
             treeViewItemData.AddChildByIndex(itemIndex, AddToBeforeChildIndex,itemData);
         }
 
-        public bool RemoveItemChild(int itemIndex, int childIndex)
+        public void RemoveItemChild(int itemIndex, int childIndex)
         {
             if (itemIndex < 0 || itemIndex >= mItemDataList.Count)
             {
-                return false;
+                return;
             }
             TreeViewItemData<T> itemData = mItemDataList[itemIndex];
-            return itemData.RemoveChildByIndex(itemIndex,childIndex);
+            itemData.RemoveChildByIndex(itemIndex,childIndex);
         }
 
         void DoRefreshDataSource()

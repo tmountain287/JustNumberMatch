@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@string/gcm_defaultSenderId,@string/google_storage_bucket,@string/project_id,@string/google_api_key,@string/google_crash_reporting_api_key,@string/google_app_id,@string/default_android_client_id,@string/default_web_client_id">
-  <string name="gcm_defaultSenderId" translatable="false">788294993689</string>
-  <string name="google_storage_bucket" translatable="false">justonematch-d2cfe.firebasestorage.app</string>
-  <string name="project_id" translatable="false">justonematch-d2cfe</string>
-  <string name="google_api_key" translatable="false">AIzaSyBNDvRoYK-sczT5k8hLTF1xALCsePOMb6U</string>
-  <string name="google_crash_reporting_api_key" translatable="false">AIzaSyBNDvRoYK-sczT5k8hLTF1xALCsePOMb6U</string>
-  <string name="google_app_id" translatable="false">1:788294993689:android:28c7f42daa2b3fae6a6788</string>
-  <string name="default_android_client_id" translatable="false">788294993689-5egq6j9j2dk5ahovvnjc1lsf5v0kl6q8.apps.googleusercontent.com</string>
-  <string name="default_web_client_id" translatable="false">788294993689-oqhpc6hpcj6utskqe9k45jk8illfp0i6.apps.googleusercontent.com</string>
+  <string name="gcm_defaultSenderId" translatable="false">630199565601</string>
+  <string name="google_storage_bucket" translatable="false">kingdomhub-choigosugostop.firebasestorage.app</string>
+  <string name="project_id" translatable="false">kingdomhub-choigosugostop</string>
+  <string name="google_api_key" translatable="false">AIzaSyD4tpsOoTkQ_HmMe4PFhs_j0UQ-N0vM6cs</string>
+  <string name="google_crash_reporting_api_key" translatable="false">AIzaSyD4tpsOoTkQ_HmMe4PFhs_j0UQ-N0vM6cs</string>
+  <string name="google_app_id" translatable="false">1:630199565601:android:88768f6cd93e7e830c5260</string>
+  <string name="default_android_client_id" translatable="false">630199565601-gnmdmadroatmjhqvj19i2vr6juc9bovb.apps.googleusercontent.com</string>
+  <string name="default_web_client_id" translatable="false">630199565601-k4r0g0dimt23rqaemikjfd7l3tii0i30.apps.googleusercontent.com</string>
 </resources>

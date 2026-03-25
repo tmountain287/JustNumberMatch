@@ -1,0 +1,11 @@
+Nagari.png
+size:164,556
+filter:Linear,Linear
+01
+bounds:2,230,148,161
+02
+bounds:2,393,160,161
+03
+bounds:2,67,148,161
+04
+bounds:2,2,103,63

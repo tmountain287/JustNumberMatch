@@ -9,7 +9,7 @@ public class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
         {
             if (null == instance)
             {
-                instance = FindAnyObjectByType<T>();
+                instance = FindObjectOfType<T>();
             }
             return instance;
         }

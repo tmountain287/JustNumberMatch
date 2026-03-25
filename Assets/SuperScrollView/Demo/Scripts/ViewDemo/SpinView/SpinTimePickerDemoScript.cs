@@ -70,10 +70,12 @@ namespace SuperScrollView
             mCurSelectedHour = DateTime.Now.Hour;
             int indexHour = mCurSelectedHour - mFirstHour -1;   
             mLoopListViewHour.MovePanelToItemIndex(indexHour, 0);
+            mLoopListViewHour.FinishSnapImmediately();
 
             mCurSelectedMinute = DateTime.Now.Minute;
             int indexMinute = mCurSelectedMinute - mFirstMinute -1;   
             mLoopListViewMinute.MovePanelToItemIndex(indexMinute, 0);
+            mLoopListViewMinute.FinishSnapImmediately();
         }
 
         void UpdateCurSelect()

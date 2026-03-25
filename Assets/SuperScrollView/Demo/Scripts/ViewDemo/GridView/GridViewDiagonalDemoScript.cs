@@ -21,7 +21,7 @@ namespace SuperScrollView
             settingParam.mPadding = new RectOffset(10, 20, 30, 40);
             settingParam.mGridFixedType = GridFixedType.RowCountFixed;
             settingParam.mFixedRowOrColumnCount = 6;
-            mLoopGridView.InitGridView(mDataSourceMgr.TotalItemCount, OnGetItemByIndex, settingParam);
+            loopListView2.InitGridView(mDataSourceMgr.TotalItemCount, OnGetItemByIndex, settingParam);
             */
 
             mDataSourceMgr = new DataSourceMgr<ItemData>(mTotalDataCount);

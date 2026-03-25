@@ -1,11 +1,10 @@
-﻿using Firebase.Auth;
-using System;
+﻿using System;
 using UnityEngine;
 
 public abstract class PlatformLoginGoogle : PlatformLoginBase
-{    
-    protected string webClientId = "788294993689-oqhpc6hpcj6utskqe9k45jk8illfp0i6.apps.googleusercontent.com";
-    protected string iosClientId = "788294993689-oqhpc6hpcj6utskqe9k45jk8illfp0i6.apps.googleusercontent.com";
+{
+    protected string webClientId = "630199565601-k4r0g0dimt23rqaemikjfd7l3tii0i30.apps.googleusercontent.com";
+    protected string iosClientId = "630199565601-v1df725i2709g9mfoeh3bigoomsia266.apps.googleusercontent.com";
 
     public override void Initialize()
     {
@@ -21,30 +20,19 @@ public abstract class PlatformLoginGoogle : PlatformLoginBase
             // 안전 로그 (토큰은 절대 풀로그 하지 마세요)
             Debug.Log($"Google login OK: email={dto.email}, name={dto.displayName}");
 
-            PlatformLoginReceiver.Instance.Token = dto.idToken;
-
-            //PlatformLoginReceiver.Instance.SaveUserInfo(
-            //    dto.idToken,
-            //    dto.id ?? string.Empty,
-            //    dto.email ?? string.Empty,
-            //    dto.familyName
-            //);
+            PlatformLoginReceiver.Instance.SaveUserInfo(
+                dto.idToken,
+                dto.id ?? string.Empty,
+                dto.email ?? string.Empty,
+                dto.familyName
+            );
 
             UnityMainThreadDispatcher.Instance.Enqueue(() =>
             {
                 onLoginSuccess?.Invoke();
             });
 
-            FirebaseManager.Instance.GoogleSignInWithCredentialAsync(dto.idToken, ()=>
-            {
-                UnityMainThreadDispatcher.Instance.Enqueue(() =>
-                {
-                    onLoginSuccess?.Invoke();
-                });
-            }, (error)=>
-            {
-                onLoginFail?.Invoke(error);
-            });
+            FirebaseManager.Instance.GoogleSignInWithCredentialAsync(dto.idToken);
         }
         catch (Exception ex)
         {
@@ -56,5 +44,6 @@ public abstract class PlatformLoginGoogle : PlatformLoginBase
     public override void LogOut(Action _onSuccess = null, Action<string> _onFail = null)
     {
         FirebaseManager.Instance.LogOut();
+        PlatformLoginReceiver.Instance.DeleteUserInfo();
     }
 }

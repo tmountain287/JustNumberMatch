@@ -13,7 +13,7 @@ public abstract class PlayerPrefsChangeEvent : MonoBehaviour
 
     protected virtual void OnDisable()
     {
-        if (PlayerPrefsManager.Instance != null)
+        if (PlayerPrefsManager.GetInstance() != null)
             PlayerPrefsManager.Instance.RemoveChangeEvent(prefsKey, SetChangeEvent);
     }
     

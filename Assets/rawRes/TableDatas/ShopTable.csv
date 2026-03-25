@@ -1,9 +1,0 @@
-﻿ID,CategoryType,ItemType,Value,NeedItemType,NeedValue,Sale
-1,Item,Hint,1,Gold,200,0
-2,Item,Hint,5,Gold,900,10
-3,Item,Hint,10,Gold,1700,15
-4,Item,Hint,30,Gold,4800,20
-5,Item,TimeAttackTicket,1,Gold,200,0
-6,Item,TimeAttackTicket,10,Gold,1800,10
-7,Item,Change,1,Gold,200,0
-8,Item,Change,10,Gold,1800,10

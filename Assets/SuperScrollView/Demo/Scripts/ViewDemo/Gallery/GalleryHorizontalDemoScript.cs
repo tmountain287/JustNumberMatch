@@ -20,6 +20,7 @@ namespace SuperScrollView
             mLoopListView.InitListView(mDataSourceMgr.TotalItemCount+4, OnGetItemByIndex);
             InitButtonPanel();
             mLoopListView.MovePanelToItemIndex(2, 0);
+            mLoopListView.FinishSnapImmediately();
         }
 
         void InitButtonPanel()

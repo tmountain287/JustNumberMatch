@@ -84,10 +84,8 @@ public class PlatformSocialIOS : PlatformSocialBase
     {
         
     }
-    
 
     public override void ReportScore(long score, string leaderboardId)
-
     {
         if (!Social.localUser.authenticated)
             return;

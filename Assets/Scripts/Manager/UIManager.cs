@@ -1,4 +1,4 @@
-using Common.Manager;
+﻿using Common.Manager;
 using Common.UI;
 using DG.Tweening;
 using System;
@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoSingleton<UIManager>
 {
@@ -13,16 +14,11 @@ public class UIManager : MonoSingleton<UIManager>
     [SerializeField] private List<BaseUI> uiList = new();
     [SerializeField] private GameObject loading = null;
     [SerializeField] private GameObject backAds = null;
-    [SerializeField] private GameObject block = null;
-    [SerializeField] private RewardEffectUI rewardEffectUI = null;
     #endregion
-
-    private TopUI topUI = null;
 
     public bool IsLoading { get { return loading.activeSelf; } }
 
     public BaseUI.Type CurrentUIType { get => currentUIType; set => currentUIType = value; }
-    public TopUI TopUI { get => topUI; set => topUI = value; }
 
     private BaseUI.Type currentUIType = BaseUI.Type.INTRO;
 
@@ -47,19 +43,6 @@ public class UIManager : MonoSingleton<UIManager>
 #if UNITY_WEBGL && !UNITY_EDITOR
     private bool canFullScreen = false;
 #endif
-
-    public void ActivateForSeconds(float duration)
-    {
-        StartCoroutine(ActivateRoutine(duration));
-    }
-
-    private IEnumerator ActivateRoutine(float duration)
-    {
-        block.SetActive(true);
-        yield return new WaitForSeconds(duration);
-        block.SetActive(false);
-    }
-
     public void ShowLoading()
     {
         loading.SetActive(true);
@@ -70,9 +53,9 @@ public class UIManager : MonoSingleton<UIManager>
         loading.SetActive(false);
     } 
 
-    public T GetUI<T>(BaseUI.Type _type) where T : BaseUI
+    public BaseUI GetUI(BaseUI.Type _type)
     {
-        return uiList.Where(x => x.UIType == _type).FirstOrDefault() as T;
+        return uiList.Where(x => x.UIType == _type).FirstOrDefault();
     }
 
 
@@ -82,29 +65,49 @@ public class UIManager : MonoSingleton<UIManager>
         {
             uiList.ForEach(x => x.SetUI(_type));
             CurrentUIType = _type;
-            GameAnalyticsHelper.LogScreenView("Screen_" + _type.ToString(), _type.ToString());
             return true;
         }
         return false;        
     }
 
-    public void ShowRewardedAd(Action<string> _onSuccess, Action _onFail = null, string placement = "unknown")
+    public void ShowRewardedAd(Action<string> _onSuccess, Action _onFail = null)
+    {
+        ShowLoading();
+        GoogleAdManager.Instance.ShowRewardedAd((adapter) =>
+        {
+            CNetDocument.InGame.GamePlayCount = 0;
+            HideLoading();
+            _onSuccess?.Invoke(adapter);
+        },
+        () =>
+        {
+            HideLoading();
+        },
+        (str) =>
+        {
+            HideLoading();
+            PopupManager.Instance.OpenMessageBoxPopup("알림", str);
+            _onFail?.Invoke();
+        });
+    }
+
+    public void ShowRewardedAdOnFail(Action<string> _onSuccess, Action _onFail = null)
     {
         ShowLoading();
         GoogleAdManager.Instance.ShowRewardedAd((adapter) =>
         {
             HideLoading();
-            UserDataManager.ResetInterstitialCondition();
             _onSuccess?.Invoke(adapter);
         },
-        () => { HideLoading(); },
+        () =>
+        {
+            HideLoading();
+        },
         (str) =>
         {
             HideLoading();
-            PopupManager.Instance.OpenMessageBoxPopup("", str);
             _onFail?.Invoke();
-        },
-        placement);
+        });
     }
 
     public void OnUI(BaseUI.Type _type, bool _isOn)
@@ -120,14 +123,6 @@ public class UIManager : MonoSingleton<UIManager>
     {
         backAds.SetActive(_flag);
     }
-
-    public void OnEffect(ItemType _itemType, int _amount, Vector3 _startPosition, Transform _targetPoint,
-        Action _firsArrivedAction = null, Action _arrivedAction = null)
-    {
-        rewardEffectUI.OnEffect(_itemType, _amount, _startPosition, _targetPoint,
-        _firsArrivedAction, _arrivedAction);
-    }
-
 
 
     //    public void ForceFullScreen()

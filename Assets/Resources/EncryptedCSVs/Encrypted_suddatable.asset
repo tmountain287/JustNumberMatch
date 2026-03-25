@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a076924e9a82334daf6141c371965f2, type: 3}
+  m_Name: Encrypted_suddatable
+  m_EditorClassIdentifier: Assembly-CSharp::EncryptedCSVData
+  fileName: suddatable
+  encryptedData: OiFPPAQZOkc3HAQEERZJICYbAFUlBA8HAFgYGQoMAysCHwBYDQoRHH5vU16J9uOG6e2Z0fKZ8NVzWVVJQ0lTXkhFc4fnxZ7p95jR5bT+xFVCVW54VFiz9tmU//GJxvSfyspJSENVU15UWG5Hj83ijvbTSUVvZm9LX4n+zon244HR6Jjwwl5URG9bSUhfVU+Y0eW0/sRVQlVueFZYs/XAkubET0dVRHNZSUhDSYjnxFhtW2hzR0mJx8mfyspJTENVT0BJTXOA8NhfV1N/b0FzhuntmPDCXlBEb0dXVUtJiOfEWG5baHNFSY/LxZ/KyklMQ1VPQElDc4Dw2F9UU39vQ3OH+diY8MJeUERvR1dVRUmI58RYbltoc0tJj+rBn8rKSUxDVU9ASUFzgPDYX1RTf29Nc4fn1Zjwwl5QRG9HV1VHSYjnxFhuW2hzQlVPnufItP7EVUZVU15XWGxHjuzSSVJCaH5uWkmV7tGI58RYaltVVUFJUV6O4f5HVEl+b1JASZjC147s0klWQlVYbUdUVZjwwl5URFJhVEpfifb+jtLzR1FJQ0lQXkhFc4fw9ZjDz15URFJhVE1fjuz3ifbzR1ZMQ0lXXkhFc4Dq/J/nz15XRFJhVExfj9beifb6R1ZJQ0lWXkhFc4HQ1Z/nxl5XRFJhVE9fif3Xifb6R1dMQ0lVXkhFc4f73J/nxl5XRFJhVE5fif3XifbzR1dJQ0lUXkhFc4f73J/nz15WRFJhVEFfiefKjtHGR1RMQ0lbXkhFc4fhwZjA+l5RRFJhVEBfj9Pjiez7R1RJQ0laXkhFc4HV6J/9x15QRFJhV0lfifTejvnAS4745ElWQklFb0ddVZjk9F5dRFJhV0hfif7Oj8fuS4745ElWQklFb0dSVZjk9F5dRFJhV0tfifTeifDwS4745ElWQklFb0dTVZjk9F5dRFJhV0pfjujWifDwS4745ElWQklFb0dQVZjk9F5dRFJhV01fjufWRZ/e/ElMQ0lSQklAc4Dk7l9dU39vRmpHif3LRYjz8lhqW0lIQ0lQXo71yEdSSX5vUURJn877RZLy8k9HVVhuW0lLX47i5UlDb2ZvS0RJjuf5VLTq8lVGVU9DVVhuR4745ElUQmh+bVNJktT4jvTQWG5bSUhCSU5DSZ/49oj/xklWQmh+
+  key: secret_key

@@ -342,7 +342,7 @@ namespace SuperScrollView
 
 
 
-        public void SetItemSize(int itemIndex, float itemSize, float padding)
+        void SetItemSize(int itemIndex, float itemSize, float padding)
         {
             mItemPosMgr.SetItemSize(itemIndex, itemSize + padding);
             if (itemIndex >= mLastItemIndex)
@@ -1530,16 +1530,6 @@ namespace SuperScrollView
         public float GetContentPanelSize()
         {
             float tTotalSize = mItemPosMgr.mTotalSize > 0 ? (mItemPosMgr.mTotalSize - mLastItemPadding) : 0;
-            if (tTotalSize < 0)
-            {
-                tTotalSize = 0;
-            }
-            return tTotalSize;
-        }
-
-        public float GetContentPanelSizeWithLastItemPadding()
-        {
-            float tTotalSize = mItemPosMgr.mTotalSize > 0 ? mItemPosMgr.mTotalSize : 0;
             if (tTotalSize < 0)
             {
                 tTotalSize = 0;

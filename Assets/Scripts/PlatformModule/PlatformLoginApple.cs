@@ -1,9 +1,8 @@
-#if UNITY_IOS
+﻿#if UNITY_IOS
 using System;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
-// iOS 네이티브: AppleLogin_StartSignInWithNonce(rawNonce) 사용 시 동일 nonce를 Firebase에도 전달해야 함
 [Serializable]
 public class AppleFullNameDto
 {
@@ -31,7 +30,6 @@ public class AppleSignInDto
 public class PlatformLoginApple : PlatformLoginBase
 {
     [DllImport("__Internal")] private static extern void AppleLogin_StartSignIn();
-    [DllImport("__Internal")] private static extern void AppleLogin_StartSignInWithNonce(string rawNonce);
     [DllImport("__Internal")] private static extern void AppleLogin_Logout();
     [DllImport("__Internal")] private static extern void AppleLogin_CheckCredentialState(string userId);
     [DllImport("__Internal")] private static extern void AppleLogin_OpenAppSettings();    
@@ -41,15 +39,14 @@ public class PlatformLoginApple : PlatformLoginBase
        
     }
 
-    private string _pendingRawNonce;
-
     public override bool StartLogin(Action _onSuccess, Action<string> _onFail)
     {
-        if (!base.StartLogin(_onSuccess, _onFail))
-            return false;
-        _pendingRawNonce = FirebaseManager.GenerateRawNonceForApple();
-        AppleLogin_StartSignInWithNonce(_pendingRawNonce);
-        return true;
+        if (base.StartLogin(_onSuccess, _onFail))
+        {
+            AppleLogin_StartSignIn();
+        }
+
+        return false;
     }
 
     public override void OnLoginSuccess(string _json)
@@ -57,8 +54,11 @@ public class PlatformLoginApple : PlatformLoginBase
         try
         {
             var dto = JsonUtility.FromJson<AppleSignInDto>(_json);
+
+            // 토큰은 로그 금지
             Debug.Log($"Apple login OK: userId={dto.userId}, email={(dto.email ?? "null")}");
 
+            // 필요 로직: 서버 검증/저장
             PlatformLoginReceiver.Instance.SaveUserInfo(
                 dto.idToken,
                 dto.userId ?? string.Empty,
@@ -66,31 +66,18 @@ public class PlatformLoginApple : PlatformLoginBase
                 BuildDisplayName(dto.fullName)
             );
 
-            // 서버 검증(Cloud Function verifyAppleIdToken) 호출 — 로그/감사용
-            _ = NetworkManager.Instance.VerifyAppleIdTokenAsync(dto.idToken);
+            UnityMainThreadDispatcher.Instance.Enqueue(() =>
+            {
+                onLoginSuccess?.Invoke();
+            });
 
-            string nonce = _pendingRawNonce;
-            _pendingRawNonce = null;
-
-            FirebaseManager.Instance.AppleSignInWithCredentialAsync(
-                dto.idToken,
-                nonce,
-                () =>
-                {
-                    UnityMainThreadDispatcher.Instance.Enqueue(() => onLoginSuccess?.Invoke());
-                },
-                (error) =>
-                {
-                    UnityMainThreadDispatcher.Instance.Enqueue(() => onLoginFail?.Invoke(error ?? "Firebase Apple sign-in failed"));
-                }
-            );
+            FirebaseManager.Instance.AppleSignInWithCredentialAsync(dto.idToken);
         }
         catch (Exception ex)
         {
             Debug.Log($"OnLoginSuccess parse failed: {ex}");
-            _pendingRawNonce = null;
-            onLoginFail?.Invoke(ex.Message);
-        }
+            onLoginFail?.Invoke("");
+        }        
     }
 
     public override void LogOut(Action _onSuccess = null, Action<string> _onFail = null)
@@ -98,6 +85,7 @@ public class PlatformLoginApple : PlatformLoginBase
         base.LogOut(()=>
         {
             FirebaseManager.Instance.LogOut();
+            PlatformLoginReceiver.Instance.DeleteUserInfo();
             _onSuccess?.Invoke();
         }, _onFail);
         AppleLogin_Logout();

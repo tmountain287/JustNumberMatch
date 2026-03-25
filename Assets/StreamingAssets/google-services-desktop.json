@@ -1,0 +1,63 @@
+{
+    "project_info": {
+        "project_number": "630199565601",
+        "project_id": "kingdomhub-choigosugostop",
+        "storage_bucket": "kingdomhub-choigosugostop.firebasestorage.app"
+    },
+    "client": [
+        {
+            "client_info": {
+                "mobilesdk_app_id": "1:630199565601:android:88768f6cd93e7e830c5260",
+                "android_client_info": {
+                    "package_name": "com.kingdomhub.choigosugostop"
+                }
+            },
+            "oauth_client": [
+                {
+                    "client_id": "630199565601-gnmdmadroatmjhqvj19i2vr6juc9bovb.apps.googleusercontent.com",
+                    "client_type": 1,
+                    "android_info": {
+                        "package_name": "com.kingdomhub.choigosugostop",
+                        "certificate_hash": "8b63ace77904998554afc1d1e3bbd9ba896edb07"
+                    }
+                },
+                {
+                    "client_id": "630199565601-mtd7j66fu7atjgnapm1rb7ururjlhqr2.apps.googleusercontent.com",
+                    "client_type": 1,
+                    "android_info": {
+                        "package_name": "com.kingdomhub.choigosugostop",
+                        "certificate_hash": "aca7ba310b81e40661efa357af818566905f5348"
+                    }
+                },
+                {
+                    "client_id": "630199565601-qd18ih2gf96k3l38c89q37tv2phauo8u.apps.googleusercontent.com",
+                    "client_type": 1,
+                    "android_info": {
+                        "package_name": "com.kingdomhub.choigosugostop",
+                        "certificate_hash": "653a04a9a37d910d3fef9956e9cd47146e4b480b"
+                    }
+                },
+                {
+                    "client_id": "630199565601-k4r0g0dimt23rqaemikjfd7l3tii0i30.apps.googleusercontent.com",
+                    "client_type": 3
+                }
+            ],
+            "api_key": [
+                {
+                    "current_key": "AIzaSyD4tpsOoTkQ_HmMe4PFhs_j0UQ-N0vM6cs"
+                }
+            ],
+            "services": {
+                "appinvite_service": {
+                    "other_platform_oauth_client": [
+                        {
+                            "client_id": "630199565601-k4r0g0dimt23rqaemikjfd7l3tii0i30.apps.googleusercontent.com",
+                            "client_type": 3
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "configuration_version": "1"
+}

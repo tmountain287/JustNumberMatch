@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class GameScene : MonoBehaviour
 {
-    private float delayTime = 0.1f;
-
+    private float delayTime = 0.01f;
     // Start is called before the first frame update
     IEnumerator Start()
     {
@@ -18,17 +17,16 @@ public class GameScene : MonoBehaviour
             SoundManager.Instance.RestoreSound();
             UIManager.Instance.SetBackAds(false);
         });
-        TableDataManager.Instance.LoadAllCSVs();
-        //yield return new WaitForSeconds(delayTime);
-        //FirebaseManager.Instance.Initialize();
         yield return new WaitForSeconds(delayTime);
-        IAPManager.Instance.Initialize();        
+        TableDataManager.Instance.LoadAllCSVs();
+        yield return new WaitForSeconds(delayTime);
+        IAPManager.Instance.Initialize();
+        yield return new WaitForSeconds(delayTime);
+        FirebaseManager.Instance.Initialize();
         yield return new WaitForSeconds(delayTime);
         PlatformLoginReceiver.Instance.Initialize();
         yield return new WaitForSeconds(delayTime);
         PlatformSocialManager.Instance.Initialize();
-        yield return new WaitForSeconds(delayTime);
-        LocalPushManager.Instance.Initialize();
         yield return new WaitForSeconds(delayTime);
         UIManager.Instance.ShowUI(Common.UI.BaseUI.Type.LOBBY);
     }
