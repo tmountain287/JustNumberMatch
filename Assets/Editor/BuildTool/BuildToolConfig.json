@@ -1,20 +1,24 @@
 {
-    "buildName": "choigosugostop",
-    "androidBundleVersion": "1.22",
-    "androidVersionCode": 85,
-    "buildAsAppBundle": true,
+    "buildName": "crowncardquest",
+    "androidBundleVersion": "1.0",
+    "androidVersionCode": 25,
+    "buildAsAppBundle": false,
     "iosBundleVersion": "1.0",
     "iosBuildNumber": "1",
     "openAfterBuild": true,
     "cleanBuild": false,
     "defineSymbols": [
         {
-            "symbol": "SERVICE",
+            "symbol": "TEST",
             "enabled": true
         },
         {
-            "symbol": "TEST",
+            "symbol": "SERVICE",
             "enabled": false
+        },
+        {
+            "symbol": "ALPHA",
+            "enabled": true
         }
     ]
 }

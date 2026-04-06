@@ -1,7 +1,6 @@
 ﻿using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using Util;
 
@@ -20,7 +19,7 @@ namespace Common.Manager
         [SerializeField] private ObjectPool fxPool = null;
         #endregion
 
-        private Dictionary<int, List<AudioSource>> fxDict = new();
+        private List<AudioSource> audioSourceList = new ();
         private List<AudioClip> overlapList = new();
 
         private float bgmVolume = 1f;
@@ -43,10 +42,13 @@ namespace Common.Manager
             set
             {
                 fxVolume = Mathf.Clamp(value, 0f, 1f);
-                foreach (var audioSourceList in fxDict.Values)
-                {
-                    audioSourceList.ForEach(audioSource => audioSource.volume = fxVolume);
-                }
+               
+                    audioSourceList.ForEach(audioSource =>
+                    {
+                        audioSource.volume = fxVolume;
+                        Debug.Log(audioSource.clip.name);
+                    });
+               
             }
         }
 
@@ -114,7 +116,18 @@ namespace Common.Manager
             }
         }
 
-        public void PlayFX(AudioClip _audioClip, bool _overlap = true, int _inGameIndex = -1)
+        public void PlayFX(AudioClip _audioClip, float _delay)
+        {
+            StartCoroutine(PlayFXRoutine(_audioClip, _delay));
+        }
+
+        private IEnumerator PlayFXRoutine(AudioClip _audioClip, float _delay)
+        {
+            yield return new WaitForSeconds(_delay);
+            PlayFX(_audioClip);
+        }
+
+        public void PlayFX(AudioClip _audioClip, float _pitch = 1.0f, bool _overlap = true)
         {
             if (_audioClip == null)
                 return;
@@ -128,6 +141,7 @@ namespace Common.Manager
 
             audioSource.volume = fxVolume;
             audioSource.clip = _audioClip;
+            audioSource.pitch = _pitch;
             audioSource.Play();
 
             if (!_overlap)
@@ -135,48 +149,32 @@ namespace Common.Manager
                 overlapList.Add(_audioClip);
             }
 
-            if (_inGameIndex != -1)
-            {
-                if (fxDict.ContainsKey(_inGameIndex))
-                {
-                    fxDict[_inGameIndex].Add(audioSource);
-                }
-                else
-                {
-                    fxDict.Add(_inGameIndex, new List<AudioSource> { audioSource });
-                }
-            }
+            audioSourceList.Add(audioSource);
 
-            StartCoroutine(ReturnToPoolAfterPlay(audioSource, _audioClip, _overlap, _inGameIndex));
+            StartCoroutine(ReturnToPoolAfterPlay(audioSource, _audioClip, _overlap));
         }
 
-        public void AllStopFX()
-        {
-            foreach (var item in fxDict)
-            {
-                item.Value.ForEach(audio => audio.Stop());
-            }
-        }
+        //public void AllStopFX()
+        //{
+        //    foreach (var item in fxDict)
+        //    {
+        //        item.Value.ForEach(audio => audio.Stop());
+        //    }
+        //}
 
-        public void StopFX(int _inGameIndex)
-        {
-            if (fxDict.ContainsKey(_inGameIndex))
-            {
-                fxDict[_inGameIndex].ForEach(audio => audio.Stop());
-            }
-        }
+        //public void StopFX(int _inGameIndex)
+        //{
+        //    if (fxDict.ContainsKey(_inGameIndex))
+        //    {
+        //        fxDict[_inGameIndex].ForEach(audio => audio.Stop());
+        //    }
+        //}
 
-        private IEnumerator ReturnToPoolAfterPlay(AudioSource _audioSource, AudioClip _audioClip, bool _overlap, int _inGameIndex)
+        private IEnumerator ReturnToPoolAfterPlay(AudioSource _audioSource, AudioClip _audioClip, bool _overlap)
         {
             yield return new WaitWhile(() => _audioSource.isPlaying && _audioSource.clip == _audioClip);
-            if (_inGameIndex != -1)
-            {
-                fxDict[_inGameIndex].Remove(_audioSource);
-                if (fxDict[_inGameIndex].Count == 0)
-                {
-                    fxDict.Remove(_inGameIndex);
-                }
-            }
+            
+            audioSourceList.Remove(_audioSource);             
 
             if (!_overlap)
             {
@@ -195,6 +193,16 @@ namespace Common.Manager
         public void RestoreSound()
         {
             FxVolume = PlayerPrefsManager.Instance.GetPlayerPrefsValue(PrefsKey.FX_Sound, 1);
+            BgmVolume = PlayerPrefsManager.Instance.GetPlayerPrefsValue(PrefsKey.BGM, 1);
+        }
+
+        public void MuteBGMSound()
+        {
+            BgmVolume = 0;
+        }
+
+        public void RestoreBGMSound()
+        {            
             BgmVolume = PlayerPrefsManager.Instance.GetPlayerPrefsValue(PrefsKey.BGM, 1);
         }
     }

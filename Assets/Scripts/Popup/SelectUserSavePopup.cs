@@ -4,9 +4,8 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Gostop.UI
-{
-    public class SelectUserSavePopup : BasePopup
+namespace JustOneMatch.UI
+{    public class SelectUserSavePopup : BasePopup
     {
         [SerializeField] private SelectUserPanel beforePanel = null;
         [SerializeField] private SelectUserPanel currentPanel = null;
@@ -31,17 +30,17 @@ namespace Gostop.UI
 
             if (!_isCurrent)
             {
-                beforePanel.SetPanel(_userData);
+                beforePanel.SetPanel(false, _userData);
             }
             else
             {
-                currentPanel.SetPanel(_userData);
+                currentPanel.SetPanel(true, _userData);
             }
 
             onConfirmClick = () =>
             {
-                ClosePopup();
-                _onComplete?.Invoke(_isCurrent);
+                ClosePopup(() =>
+                _onComplete?.Invoke(_isCurrent));
             };
         }
     }

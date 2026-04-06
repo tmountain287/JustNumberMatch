@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using Newtonsoft.Json;
 using System;
 using System.Text;
+using UnityEngine;
 
 public static class SecurePlayerPrefs
 {
-    private static readonly string secretKey = "dnjsgksmszlfhqkRntpdy";
+    private static readonly string secretKey = "dnjsgksmszlfhq123456";
 
     public static void SetInt(string key, int value)
     {
@@ -55,6 +56,17 @@ public static class SecurePlayerPrefs
             return defaultValue;
 
         return Decrypt(encrypted);
+    }
+
+    public static string Encrypt(UserData userData)
+    {
+        string plainText = JsonConvert.SerializeObject(userData);
+        byte[] bytes = Encoding.UTF8.GetBytes(plainText);
+        for (int i = 0; i < bytes.Length; i++)
+        {
+            bytes[i] ^= (byte)secretKey[i % secretKey.Length];
+        }
+        return Convert.ToBase64String(bytes);
     }
 
     public static string Encrypt(string plainText)

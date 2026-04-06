@@ -102,6 +102,30 @@ namespace Crystal
             }
         }
 
+        public Vector4 GetSafeAreaInsets()
+        {
+            Rect safe = GetSafeArea();
+
+            // 🔽 여기서 픽셀 좌표를 캔버스 로컬로 변환
+            Canvas canvas = GetComponentInParent<Canvas>();
+            Camera cam = canvas && canvas.renderMode != RenderMode.ScreenSpaceOverlay ? canvas.worldCamera : null;
+            RectTransform canvasRt = canvas.GetComponent<RectTransform>();
+
+            // 전체 화면, SafeArea 사각형을 캔버스 로컬로 변환
+            Vector2 canvasBL, canvasTR, safeBL, safeTR;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRt, new Vector2(0, 0), cam, out canvasBL);
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRt, new Vector2(Screen.width, Screen.height), cam, out canvasTR);
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRt, safe.min, cam, out safeBL);
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRt, safe.max, cam, out safeTR);
+
+            float left = safeBL.x - canvasBL.x;
+            float right = canvasTR.x - safeTR.x;
+            float bottom = safeBL.y - canvasBL.y;
+            float top = canvasTR.y - safeTR.y;
+
+            return new Vector4(left, top, right, bottom);
+        }
+
         /// <summary>
         /// Gets the safe area, applying simulation data in Editor if needed.
         /// </summary>
@@ -138,30 +162,6 @@ namespace Crystal
             }
 
             return safeArea;
-        }
-
-        public Vector4 GetSafeAreaInsets()
-        {
-            Rect safe = GetSafeArea();
-
-            // 🔽 여기서 픽셀 좌표를 캔버스 로컬로 변환
-            Canvas canvas = GetComponentInParent<Canvas>();
-            Camera cam = canvas && canvas.renderMode != RenderMode.ScreenSpaceOverlay ? canvas.worldCamera : null;
-            RectTransform canvasRt = canvas.GetComponent<RectTransform>();
-
-            // 전체 화면, SafeArea 사각형을 캔버스 로컬로 변환
-            Vector2 canvasBL, canvasTR, safeBL, safeTR;
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRt, new Vector2(0, 0), cam, out canvasBL);
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRt, new Vector2(Screen.width, Screen.height), cam, out canvasTR);
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRt, safe.min, cam, out safeBL);
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRt, safe.max, cam, out safeTR);
-
-            float left = safeBL.x - canvasBL.x;
-            float right = canvasTR.x - safeTR.x;
-            float bottom = safeBL.y - canvasBL.y;
-            float top = canvasTR.y - safeTR.y;
-
-            return new Vector4(left, top, right, bottom);
         }
 
         /// <summary>

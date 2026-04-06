@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "63697920007",
+    "project_id": "crowncardquest",
+    "storage_bucket": "crowncardquest.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:63697920007:android:b97f77ea4b6119813a4aa2",
+        "android_client_info": {
+          "package_name": "com.justthislab.crowncardquest"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "63697920007-4d58jhbsnmn6rq43dcgkind0neegtq00.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.justthislab.crowncardquest",
+            "certificate_hash": "3774c377b6c933f195af67780ef96893a338a093"
+          }
+        },
+        {
+          "client_id": "63697920007-4i7vt406i2a3rs7930girbhqftp739na.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.justthislab.crowncardquest",
+            "certificate_hash": "20cc8d42341cdcc1ab86a98d9c4fca738807f204"
+          }
+        },
+        {
+          "client_id": "63697920007-14c9ksoeh9btckedf2s4epa5jc7g1hvt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3_UHegnJUscFaIxAUf6te4MI4hFEr0H0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "63697920007-14c9ksoeh9btckedf2s4epa5jc7g1hvt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

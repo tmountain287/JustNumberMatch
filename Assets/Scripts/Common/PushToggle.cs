@@ -29,19 +29,19 @@ namespace Common.UI
 
         private void OnEnable()
         {
-            UserDataManager.OnValuePushChanged.AddListener(SetToggle);
+            //UserDataManager.OnValuePushChanged.AddListener(SetToggle);
             SetToggle();
         }
 
         private void OnDisable()
         {
-            UserDataManager.OnValuePushChanged.RemoveListener(SetToggle);
+            //UserDataManager.OnValuePushChanged.RemoveListener(SetToggle);
         }
 
         public void SetToggle()
         {
-            onButton.gameObject.SetActive(UserDataManager.IsPush);
-            offButton.gameObject.SetActive(!UserDataManager.IsPush);
+            //onButton.gameObject.SetActive(UserDataManager.IsPush);
+            //offButton.gameObject.SetActive(!UserDataManager.IsPush);
         }
         
 

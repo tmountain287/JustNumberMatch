@@ -3,7 +3,7 @@ using Common.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Gostop.UI
+namespace Holdem.UI.Popup
 {
     public class AccountDelPopup : BasePopup
     {

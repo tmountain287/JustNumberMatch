@@ -67,14 +67,19 @@ namespace SuperScrollView
             }
         }
 
-        public void RemoveChildByIndex(int index,int childIndex)
+        public bool RemoveChildByIndex(int index,int childIndex)
         {
+            if (childIndex < 0 || childIndex >= mChildItemDataList.Count)
+            {
+                return false;
+            }
             mChildItemDataList.RemoveAt(childIndex);
             for (int i = childIndex; i < mChildItemDataList.Count; ++i)
             {
                 T tmpChildItemData = mChildItemDataList[i];
                 tmpChildItemData.OnIndexChanged(i, index);
             }
+            return true;
         }
 
         public T GetChild(int index)

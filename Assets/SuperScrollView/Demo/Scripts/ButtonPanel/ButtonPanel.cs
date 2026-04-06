@@ -61,7 +61,7 @@ namespace SuperScrollView
             if((itemIndex < 0) || (itemIndex >= mDataSourceMgr.TotalItemCount))
             {
                 return;
-            }    
+            }
             mLoopListView.MovePanelToItemIndex(itemIndex, 0);
         }
 

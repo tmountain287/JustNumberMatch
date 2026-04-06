@@ -1,6 +1,7 @@
 ﻿#if UNITY_IOS && UNITY_EDITOR_OSX
 using UnityEditor;
 using UnityEditor.Callbacks;
+using UnityEditor.iOS.Xcode;
 using System.IO;
 using UnityEngine;
 using System.Diagnostics;
@@ -15,46 +16,47 @@ public class PostBuildProcessor
         string podfilePath = Path.Combine(path, "Podfile");
         string podfileContent = @"
 source 'https://cdn.cocoapods.org/'
+source 'https://github.com/CocoaPods/Specs'
 
 platform :ios, '13.0'
-use_frameworks! :linkage => :static
 
 target 'UnityFramework' do
-  pod 'Firebase/Auth', '10.17.0'
-  pod 'Firebase/Core', '10.17.0'
-  pod 'Firebase/Messaging', '10.17.0'
-  pod 'Firebase/Analytics', '10.17.0'
-  pod 'GoogleSignIn', '6.2.4'
-  pod 'Google-Mobile-Ads-SDK', '~> 12.12.0'
+  pod 'Firebase/Auth', '10.16.0'
+  pod 'Firebase/Core', '10.16.0'
+  pod 'Firebase/Messaging', '10.16.0'
+  pod 'GoogleSignIn', '6.2.4' 
+  pod 'Google-Mobile-Ads-SDK', '~> 12.6.0'
   pod 'GoogleUserMessagingPlatform', '3.0.0'
-
-  //# Unity Ads Mediation Adapter (includes UnityAds automatically)
-  pod 'GoogleMobileAdsMediationUnity', '~> 4.16'
 end
 
 target 'Unity-iPhone' do
 end
+
+use_frameworks! :linkage => :static
 ";
 
+        // Podfile 덮어쓰기
         File.WriteAllText(podfilePath, podfileContent);
-        UnityEngine.Debug.Log("✅ [PostBuild] Podfile written.");
+        UnityEngine.Debug.Log("✅ Podfile written.");
 
-        RunCommand("/opt/homebrew/lib/ruby/gems/3.4.0/bin/pod", "install", path);
+        // 터미널 명령어로 pod install 실행 (Mac 전용)
+        RunCommand("/opt/homebrew/lib/ruby/gems/3.4.0/bin/pod", "install --repo-update", path);
     }
 
     private static void RunCommand(string cmd, string args, string workingDir)
     {
         var process = new Process();
         process.StartInfo.FileName = "/bin/bash";
-        process.StartInfo.Arguments = $"-c \"cd '{workingDir}' && '{cmd}' {args}\"";
+        process.StartInfo.Arguments = $"-c \"cd '{workingDir}' && {cmd} {args}\"";
         process.StartInfo.UseShellExecute = false;
         process.StartInfo.RedirectStandardOutput = true;
         process.StartInfo.RedirectStandardError = true;
         process.StartInfo.CreateNoWindow = true;
 
+        // ✅ 환경 변수 설정 (UTF-8)
         process.StartInfo.EnvironmentVariables["LANG"] = "en_US.UTF-8";
-        process.StartInfo.EnvironmentVariables["COCOAPODS_DISABLE_STATS"] = "true";
 
+        // 🔧 로그 출력 핸들링
         process.OutputDataReceived += (sender, e) =>
         {
             if (!string.IsNullOrEmpty(e.Data))
@@ -70,12 +72,14 @@ end
         process.Start();
         process.BeginOutputReadLine();
         process.BeginErrorReadLine();
+
         process.WaitForExit();
 
         if (process.ExitCode != 0)
-            UnityEngine.Debug.LogError("❌ [PostBuild] pod install failed with exit code " + process.ExitCode);
+            UnityEngine.Debug.LogError("❌ pod install failed with exit code " + process.ExitCode);
         else
             UnityEngine.Debug.Log("✅ [PostBuild] pod install 성공!");
     }
+
 }
 #endif

@@ -1,11 +1,12 @@
-﻿using Common.Manager;
+using Common.Manager;
 using Common.UI;
 using System;
+using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
-namespace Gostop.UI
+namespace Holdem.UI.Popup
 {
     public class AccountDelConfirmPopup : BasePopup
     {
@@ -16,72 +17,70 @@ namespace Gostop.UI
         protected override void Start()
         {
             base.Start();
-            okButton.onClick.AddListener(async () =>
-            {
-                ClosePopup();
+            okButton.onClick.AddListener(async () => { await OnConfirmDeleteAsync(); }); 
+        }
 
-                if (Application.internetReachability == NetworkReachability.NotReachable)
+        private async Task OnConfirmDeleteAsync()
+        {
+            ClosePopup();
+
+            if (Application.internetReachability == NetworkReachability.NotReachable)
+            {
+                PopupManager.Instance.OpenMessageBoxPopup("", LocalizationManager.Instance.GetText("Account deletion online"));
+                return;
+            }
+
+            UIManager.Instance.ShowLoading();
+
+            string usId = FirebaseUserData.UID;
+            if (string.IsNullOrEmpty(usId))
+            {
+                UIManager.Instance.HideLoading();
+                PopupManager.Instance.OpenMessageBoxPopup("", LocalizationManager.Instance.GetText("Account deletion fail"));
+                return;
+            }
+
+            try
+            {
+                // 1) Firestore userdata 문서 삭제 (인증된 본인만 가능)
+                bool firestoreDeleted = await FirestoreDiag.Instance.DeleteUserDataAsync(usId);
+                if (!firestoreDeleted)
                 {
-                    PopupManager.Instance.OpenMessageBoxPopup("", "온라인 상태에서만\n계정 삭제가 가능합니다.\n네트워크 연결 후\n다시 진행해 주세요.");
+                    UIManager.Instance.HideLoading();
+                    PopupManager.Instance.OpenMessageBoxPopup("", string.Format(LocalizationManager.Instance.GetText("Account deletion fail"), "Firestore"));
                     return;
                 }
-                UIManager.Instance.ShowLoading();
 
-                if (!NetworkManager.Instance.IsLogined)
+                // 2) Firebase Auth 계정 삭제 (선택: 계정 완전 삭제)
+                if (FirebaseManager.Instance != null && FirebaseManager.Instance.Auth?.CurrentUser != null)
                 {
-                    var (bro, result) = await NetworkManager.Instance.Login(SystemInfo.deviceUniqueIdentifier);
-                    if (bro.IsSuccess() && result != null)
+                    try
                     {
-
+                        await FirebaseManager.Instance.Auth.CurrentUser.DeleteAsync();
                     }
-                    else
+                    catch (Exception authEx)
                     {
-                        PopupManager.Instance.OpenMessageBoxPopup("", $"계정삭제에 실패했습니다.\n잠시 후 다시 시도해주세요.\n({bro.errorCode})");
-                        UIManager.Instance.HideLoading();
-                        return;
+                        Debug.LogWarning($"[AccountDel] Firebase Auth 삭제 실패(무시 가능): {authEx.Message}");
+                        FirebaseManager.Instance.Auth?.SignOut();
                     }
                 }
 
-                Action onLogOutSuccess = async () =>
-                {
-                    var (bro, result) = await NetworkManager.Instance.AccountDelete();
-                    UIManager.Instance.HideLoading();
-                    if (bro.IsSuccess())
-                    {
-                        UserDataManager.ClearData();
-                        NetworkManager.Instance.ClearData();
+                // 3) 로컬 데이터 초기화
+                UserDataManager.ClearData();
+                FirebaseUserData.DeleteUserInfo();
 
-                        PopupManager.Instance.OpenMessageBoxPopup("", "계정삭제가 완료되었습니다.\n게임이 다시 시작됩니다.", () =>
-                        {
-                            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-                        });
-                    }
-                    else
-                    {
-                        PopupManager.Instance.OpenMessageBoxPopup("", $"계정삭제에 실패했습니다.\n잠시 후 다시 시도해주세요.\n({bro.errorCode})");
-                    }
-                };
-
-                if (PlatformLoginReceiver.Instance.IsLinking)
+                UIManager.Instance.HideLoading();
+                PopupManager.Instance.OpenMessageBoxPopup("", LocalizationManager.Instance.GetText("Account deletion completed"), () =>
                 {
-                    PlatformLoginReceiver.Instance.LogOut(() =>
-                    {
-                        onLogOutSuccess?.Invoke();
-                    }, (error) =>
-                    {
-                        UIManager.Instance.HideLoading();
-                        if (error == "1001")
-                        {
-                            return;
-                        }
-                        PopupManager.Instance.OpenMessageBoxPopup("", $"로그아웃이 실패하여\n계정삭제에 실패했습니다.\n고객센터에 문의해주세요.\n{error}");
-                    });
-                }
-                else
-                {
-                    onLogOutSuccess?.Invoke();
-                }
-            }); 
+                    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                });
+            }
+            catch (Exception ex)
+            {
+                UIManager.Instance.HideLoading();
+                Debug.LogError($"[AccountDel] {ex.Message}");
+                PopupManager.Instance.OpenMessageBoxPopup("", string.Format(LocalizationManager.Instance.GetText("Account deletion fail"), ex.Message));
+            }
         }
 
         public void Initialize()
@@ -89,19 +88,19 @@ namespace Gostop.UI
             string strUserEmail = PlayerPrefs.GetString("UserEmail");
             uid.text = $"UID : {SystemInfo.deviceUniqueIdentifier}";
 
-            if (PlatformLoginReceiver.Instance.IsLinking)
+            if (FirebaseUserData.IsLinked)
             {
                 if (string.IsNullOrEmpty(strUserEmail))
                 {
-                    accountId.text = $"서버 ID : {PlayerPrefs.GetString("us_id")}";
+                    accountId.text = string.Format(LocalizationManager.Instance.GetText("ServerID"), PlayerPrefs.GetString("us_id"));
                 }
                 else
                 {
-                    accountId.text = $"게정 ID : {strUserEmail}";
+                    accountId.text = string.Format(LocalizationManager.Instance.GetText("AccountID"), strUserEmail);
                 }
             }
             else
-                accountId.text = "계정 ID : 미연동";
+                accountId.text = string.Format(LocalizationManager.Instance.GetText("AccountID"), LocalizationManager.Instance.GetText("Not linked"));
         }
     }
 }

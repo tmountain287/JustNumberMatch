@@ -29,7 +29,7 @@
         {
             "userAdded": false,
             "type": "UnityEngine.Cubemap",
-            "defaultInstantiationMode": 1
+            "defaultInstantiationMode": 0
         },
         {
             "userAdded": false,
@@ -44,7 +44,7 @@
         {
             "userAdded": false,
             "type": "UnityEngine.LightingSettings",
-            "defaultInstantiationMode": 1
+            "defaultInstantiationMode": 0
         },
         {
             "userAdded": false,
@@ -59,7 +59,7 @@
         {
             "userAdded": false,
             "type": "UnityEngine.PhysicMaterial",
-            "defaultInstantiationMode": 1
+            "defaultInstantiationMode": 0
         },
         {
             "userAdded": false,
@@ -69,7 +69,7 @@
         {
             "userAdded": false,
             "type": "UnityEngine.PhysicsMaterial2D",
-            "defaultInstantiationMode": 1
+            "defaultInstantiationMode": 0
         },
         {
             "userAdded": false,

@@ -1,4 +1,4 @@
-﻿
+
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -102,5 +102,31 @@ public static class StringExtensions
     {
         string formattedNumber = string.Format("{0:#,0}", _number);
         return formattedNumber;
+    }
+
+    /// <summary>밀리초를 03'20''365 형식(분'초''밀리초)으로 변환</summary>
+    public static string FormatFromMs(this long totalMs)
+    {
+        if (totalMs == 0)
+            return "--'--''---";
+
+        totalMs = Math.Max(0, totalMs);
+        long minutes = totalMs / 60000;
+        long seconds = (totalMs % 60000) / 1000;
+        long millis = totalMs % 1000;
+        return string.Format("{0:00}'{1:00}''{2:000}", minutes, seconds, millis);
+    }
+
+    /// <summary>밀리초를 03'20''365 형식(분'초''밀리초)으로 변환</summary>
+    public static string FormatFromMs_HMS(this long totalMs)
+    {
+        if (totalMs <= 0)
+            return "--'--''---";
+
+        totalMs = Math.Max(0, totalMs);
+        long minutes = totalMs / 60000;
+        long seconds = (totalMs % 60000) / 1000;
+       // long millis = totalMs % 1000;
+        return string.Format("{0:00}'{1:00}''", minutes, seconds);
     }
 }

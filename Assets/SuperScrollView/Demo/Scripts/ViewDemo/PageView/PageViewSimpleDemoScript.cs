@@ -293,7 +293,6 @@ namespace SuperScrollView
                 return;
             }    
             mLoopListView.MovePanelToItemIndex(itemIndex, 0);
-            mLoopListView.FinishSnapImmediately();
            
         }
 

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Common.Attribute;
+using Unity.VisualScripting;
 
 namespace Common.UI
 {
@@ -19,8 +20,10 @@ namespace Common.UI
             LEFT_TO_CENTER = 4,
             BOTTOM_TO_CNETER = 5,
             FADE = 6,
+            POP_H = 7,
         }
 
+        [SerializeField] private TopUI topUI = null;
         [SerializeField] private CanvasGroup canvasGroup = null;
         [SerializeField] public PopupType popupType = PopupType.NONE;
         [SerializeField] private bool canBackButton = true;
@@ -28,18 +31,21 @@ namespace Common.UI
         [SerializeField] protected List<Button> closeButtons = null;
         [SerializeField] protected bool useBack = true;
         [SerializeField] private bool allowDuplicates = false;
+        [SerializeField] protected float delay = 0;
         [ConditionalHide("useBack", true, true)]
         [SerializeField] protected float backAlpha = 0.7f;
         [SerializeField] protected OpenType openType = OpenType.NONE;
         [SerializeField] protected Image back = null;
         [SerializeField] protected RectTransform root = null;
         [SerializeField] protected RectTransform rectTransform = null;
-        
+              
         public bool CanClose { get; set; } = true;
         public bool CanBackButton { get => canBackButton; }
         public bool AllowDuplicates { get => allowDuplicates; }
 
         protected Action OnScaleUpdate = null;
+
+        private TopUI currentTopUI = null;
 
         protected virtual void Start()
         {
@@ -51,14 +57,28 @@ namespace Common.UI
             closeButtons?.ForEach(button => button.onClick.AddListener(() => ClosePopup()));
         }
 
+        protected virtual void OnDisable()
+        {
+            if (topUI != null)
+            {               
+                UIManager.Instance.TopUI = currentTopUI;
+            }
+        }
+
         protected virtual void OnEnable()
         {
+            if (topUI != null)
+            {
+                currentTopUI = UIManager.Instance.TopUI;
+                UIManager.Instance.TopUI = topUI;
+            }
+
             SetBlocksRaycasts(false);
             if (useBack)
             {
                 back.DOKill();
                 back.color = new Color(0, 0, 0, 0);
-                back.DOFade(backAlpha, 0.2f);
+                back.DOFade(backAlpha, 0.2f).SetDelay(delay);
             }
 
             root.DOKill();
@@ -67,6 +87,14 @@ namespace Common.UI
             {
                 root.localScale = Vector3.zero;
                 root.DOScale(1f, 0.2f).SetEase(Ease.OutBack).OnUpdate(() =>
+                {
+                    OnScaleUpdate?.Invoke();
+                }).OnComplete(() => SetBlocksRaycasts(true));
+            }
+            else if (openType == OpenType.POP_H)
+            {
+                root.localScale = new Vector3(1, 0, 1);
+                root.DOScaleY(1f, 0.2f).SetEase(Ease.OutBack).OnUpdate(() =>
                 {
                     OnScaleUpdate?.Invoke();
                 }).OnComplete(() => SetBlocksRaycasts(true));
@@ -109,11 +137,23 @@ namespace Common.UI
             else if (openType == OpenType.FADE)
             {
                 canvasGroup.alpha = 0;
-                canvasGroup.DOFade(1, 1f).OnComplete(()=> SetBlocksRaycasts(true));
+                canvasGroup.DOFade(1, 1f).OnComplete(() => SetBlocksRaycasts(true));
             }
             else
             {
-                SetBlocksRaycasts(true);
+                if (delay > 0)
+                {
+                    root.localScale = Vector3.zero;
+                    DOVirtual.DelayedCall(delay, () =>
+                    {
+                        root.localScale = Vector3.one;
+                        SetBlocksRaycasts(true);
+                    });
+                }
+                else
+                {
+                    SetBlocksRaycasts(true);
+                }
             }
         }
 
@@ -125,16 +165,24 @@ namespace Common.UI
 
         public virtual void Close(Action _onClose = null)
         {
-            SetBlocksRaycasts(false);
             if (useBack)
             {
                 back.DOKill();
                 back.DOFade(0.0f, 0.2f);
             }
             root.DOKill();
+         
             if (openType == OpenType.POP)
             {
                 root.DOScale(0.5f, 0.1f).SetEase(Ease.InExpo).OnComplete(() =>
+                {
+                    _onClose?.Invoke();
+                    gameObject.SetActive(false);
+                });
+            }
+            else if (openType == OpenType.POP_H)
+            {
+                root.DOScaleY(0.5f, 0.1f).SetEase(Ease.InExpo).OnComplete(() =>
                 {
                     _onClose?.Invoke();
                     gameObject.SetActive(false);
@@ -201,7 +249,7 @@ namespace Common.UI
 
         private void SetBlocksRaycasts(bool _flag)
         {
-            if(canvasGroup != null)
+            if (canvasGroup != null)
             {
                 canvasGroup.blocksRaycasts = _flag;
             }

@@ -1,7 +1,9 @@
-﻿ID,ProductType,Gold,Price,Sale,Premium,FireTicket,PeeSteal
-gold_1000,Consumable,1000,1100,0,0,0,0
-gold_5000,Consumable,5000,3300,40,0,0,0
-gold_10000,Consumable,10000,5500,50,0,0,0
-ads_remove,Consumable,5000,4900,0,1,0,0
-fireticket_20,Consumable,0,2200,0,0,30,0
-pee_steal,Consumable,0,3300,0,0,0,50
+GoogleID,AppleID,ProductType,Price,Bonus,Premium,ItemType,Value,SaleValue
+ads_remove,ads_remove,Consumable,$6.99 ,0,1,None,0,0
+gold_500,gold_500,Consumable,$0.99 ,0,0,Gold,500,0
+gold_3000,gold_3000,Consumable,$4.99 ,10,0,Gold,3000,17
+gold_7000,gold_7000,Consumable,$9.99 ,20,0,Gold,7000,28
+gold_15000,gold_15000,Consumable,$19.99 ,30,0,Gold,15000,33
+gold_45000,gold_45000,Consumable,$49.99 ,50,0,Gold,45000,44
+gold_100000,gold_100000,Consumable,$99.99 ,100,0,Gold,100000,50
+removeads_pack,removeads_pack,Consumable,$4.99 ,0,1,Gold,1000,0

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UnityMainThreadDispatcher : MonoSingleton<UnityMainThreadDispatcher>
+public class UnityMainThreadDispatcher : MonoSingletonDont<UnityMainThreadDispatcher>
 {
     private readonly Queue<Action> _executionQueue = new Queue<Action>();
 

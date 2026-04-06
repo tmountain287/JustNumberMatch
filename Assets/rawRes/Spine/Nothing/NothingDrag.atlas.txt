@@ -1,5 +1,0 @@
-NothingDrag.png
-size:100,144
-filter:Linear,Linear
-NothingDrag/WaterDrop
-bounds:2,2,93,138

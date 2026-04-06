@@ -1,9 +1,0 @@
-Hand_1.png
-size:1140,1464
-filter:Linear,Linear
-Hand/Card_Back
-bounds:499,368,343,500
-Hand/Hand_1
-bounds:2,2,495,1459
-Hand/Hand_2
-bounds:499,870,637,591

@@ -201,7 +201,7 @@ namespace SuperScrollView
             {
                 itemScript0.mRoot1.SetActive(false);
                 itemScript0.mRoot.SetActive(true);
-                itemScript0.mText.text = "Release to ScroreBoardRefresh";
+                itemScript0.mText.text = "Release to Refresh";
                 itemScript0.mArrow.SetActive(true);
                 itemScript0.mWaitingIcon.SetActive(false);
                 item.CachedRectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, mLoadingTipItemHeightForRefresh);

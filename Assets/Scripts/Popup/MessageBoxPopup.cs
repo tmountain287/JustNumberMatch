@@ -1,4 +1,5 @@
 ﻿using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -39,8 +40,8 @@ namespace Common.UI
 
         public void Initialize(string _title = "", string _message = "", Action _onOkClick = null, Action _onCancelClick = null)
         {
-            titleText.gameObject.SetActive(!string.IsNullOrEmpty(_title));
-            titleText.text = _title;
+            //titleText.gameObject.SetActive(!string.IsNullOrEmpty(_title));
+            //titleText.text = _title;
             messageText.text = _message;
 
             okButton.onClick.RemoveListener(OnOKClick);
@@ -62,11 +63,11 @@ namespace Common.UI
             if (_onCancelClick != null)
             {
                 cancelButton.onClick.AddListener(OnCancelClick);
-                cancelButton.transform.parent.gameObject.SetActive(true);
+                cancelButton.gameObject.SetActive(true);
             }
             else
             {
-                cancelButton.transform.parent.gameObject.SetActive(false);
+                cancelButton.gameObject.SetActive(false);
             }
         }
     }

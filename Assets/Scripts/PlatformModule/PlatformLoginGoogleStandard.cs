@@ -40,10 +40,19 @@ public class PlatformLoginGoogleStandard : PlatformLoginGoogle
                 photoUrl = result.picture,       // 없다면 null 그대로
             };
 
-            UnityMainThreadDispatcher.Instance.Enqueue(() =>
-            {                
-                PlatformLoginReceiver.Instance.SaveUserInfo(result.idToken, result.userId ?? "", result.email ?? "", result.name ?? "");
-                onLoginSuccess?.Invoke();
+            Debug.Log(result.idToken);
+
+            PlatformLoginReceiver.Instance.Token = result.idToken;
+
+            FirebaseManager.Instance.GoogleSignInWithCredentialAsync(result.idToken, () =>
+            {
+                UnityMainThreadDispatcher.Instance.Enqueue(() =>
+                {
+                    onLoginSuccess?.Invoke();
+                });
+            }, (error) =>
+            {
+                onLoginFail?.Invoke(error);
             });
         }
         else

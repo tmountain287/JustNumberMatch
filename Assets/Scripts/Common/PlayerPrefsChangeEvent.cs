@@ -1,4 +1,4 @@
-﻿using Common.Manager;
+using Common.Manager;
 using UnityEngine;
 
 public abstract class PlayerPrefsChangeEvent : MonoBehaviour
@@ -8,12 +8,13 @@ public abstract class PlayerPrefsChangeEvent : MonoBehaviour
     private void OnEnable()
     {
         SetChangeEvent();
-        PlayerPrefsManager.Instance.AddChangeEvent(prefsKey, SetChangeEvent);
+        if (PlayerPrefsManager.Instance != null)
+            PlayerPrefsManager.Instance.AddChangeEvent(prefsKey, SetChangeEvent);
     }
 
     protected virtual void OnDisable()
     {
-        if (PlayerPrefsManager.GetInstance() != null)
+        if (PlayerPrefsManager.Instance != null)
             PlayerPrefsManager.Instance.RemoveChangeEvent(prefsKey, SetChangeEvent);
     }
     

@@ -1,9 +1,8 @@
-﻿#if UNITY_ANDROID //&& !UNITY_EDITOR
+#if UNITY_ANDROID //&& !UNITY_EDITOR
 using GooglePlayGames;
 using GooglePlayGames.BasicApi;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class PlatformSocialAOS : PlatformSocialBase
@@ -20,10 +19,7 @@ public class PlatformSocialAOS : PlatformSocialBase
             if (status == SignInStatus.Success)
             {
                 Debug.Log("[GPG] Login Success");
-
                 CheckAchievements();
-                if (!completedAchievementList.Any(x => x == "CgkIofrI1qsSEAIQCA"))
-                    IncrementAchievement("CgkIofrI1qsSEAIQCA");
             }
             else
             {
@@ -84,9 +80,7 @@ public class PlatformSocialAOS : PlatformSocialBase
             foreach (var a in achievements)
             {
                 if (a.completed)
-                {
                     completedAchievementList.Add(a.id);
-                }
             }
         });
     }

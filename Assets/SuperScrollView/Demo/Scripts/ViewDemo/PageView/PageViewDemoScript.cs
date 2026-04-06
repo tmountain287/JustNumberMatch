@@ -45,13 +45,8 @@ namespace SuperScrollView
             mDataSourceMgr = new DataSourceMgr<ItemData>(mTotalDataCount);
             UpdatePageCount(mDataSourceMgr.TotalItemCount);
             InitAllDots();
-            LoopListViewInitParam initParam = LoopListViewInitParam.CopyDefaultInitParam();            
+            LoopListViewInitParam initParam = LoopListViewInitParam.CopyDefaultInitParam();
             initParam.mSnapVecThreshold = 99999;
-            initParam.mSmoothDumpRate = 0.1f;
-            initParam.mDistanceForRecycle0 = 1;
-            initParam.mDistanceForNew0 = 0;
-            initParam.mDistanceForRecycle1 = 1;
-            initParam.mDistanceForNew1 = 0;
             mLoopListView.mOnBeginDragAction = OnBeginDrag;
             mLoopListView.mOnDragingAction = OnDraging;
             mLoopListView.mOnEndDragAction = OnEndDrag;
@@ -368,7 +363,6 @@ namespace SuperScrollView
                 tmpPageIndex--;
             }
             mLoopListView.MovePanelToItemIndex(tmpPageIndex, 0);
-            mLoopListView.FinishSnapImmediately();
         }
 
         void OnAddButtonClicked()

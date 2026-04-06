@@ -37,6 +37,15 @@ namespace SuperScrollView
         public int mIndexInGroup;
     }
 
+    public class SGVAutoMoveToItemData
+    {
+        public int mTargetItemIndex;
+        public float mBeginPos;
+        public float mTargetPos;
+        public float mStartMoveTime;
+        public float mDuration;
+    }
+
 
     /*
     For an vertical GridView, mColumnOrRowCount is the column count, 
@@ -77,6 +86,7 @@ namespace SuperScrollView
     }
 
 
+
     public class LoopStaggeredGridView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler
     {
         Dictionary<string, StaggeredGridItemPool> mItemPoolDict = new Dictionary<string, StaggeredGridItemPool>();
@@ -101,6 +111,7 @@ namespace SuperScrollView
         int mItemTotalCount = 0;
         bool mIsVertList = false;
         System.Func<LoopStaggeredGridView, int,LoopStaggeredGridViewItem> mOnGetItemByItemIndex;
+        System.Func<int,(float,float)> mOnGetItemSizeByItemIndex;
         Vector3[] mItemWorldCorners = new Vector3[4];
         Vector3[] mViewPortRectLocalCorners = new Vector3[4];
         float mDistanceForRecycle0 = 300;
@@ -120,6 +131,8 @@ namespace SuperScrollView
         bool mNeedReplaceScrollbarEventHandler = true;
         ClickEventListener mScrollBarClickEventListener = null;
         int mCurCreatingItemIndex = -1;
+
+        SGVAutoMoveToItemData mSGVAutoMoveToItemData = null;
 
         public List<StaggeredGridItemPrefabConfData> ItemPrefabDataList
         {
@@ -218,15 +231,30 @@ namespace SuperScrollView
 
         /*
         InitListView method is to initiate the LoopStaggeredGridView component. There are 4 parameters:
+
         itemTotalCount: the total item count in the scrollview, this parameter should be >=0.
+
         layoutParam: this class is very sample, and you need new a GridViewLayoutParam instance and set the values you want.
+        
         onGetItemByItemIndex: when an item is getting in the scrollrect viewport, this Action will be called with the item’ index as a parameter, to let you create the item and update its content.
-        LoopStaggeredGridViewItem is the return value of onGetItemByItemIndex
+        
+        onGetItemSizeByItemIndex: if you can know every item's size beforehand, you may set this delegate that is to return the size and padding of a given itemIndex.
+        Because every item may have different size, and LoopStaggeredGridView needs the item's size to make layout, so if you cannot know every item's size beforehand,
+        the MovePanelToItemIndex method of LoopStaggeredGridView can only move to an item that had ever been shown in the scrollRect viewport. 
+        But if you can know every item's size beforehand, you may set this delegate that is to return the size and padding of a given itemIndex, 
+        and then when you want to move the panel to a given itemIndex,  you may firstly call LoopStaggeredGridView.UpdateContentSizeUpToItemIndex(itemIndex) to ensure the LoopStaggeredGridView have made layout up to the itemIndex,
+        and then call MovePanelToItemIndex(itemIndex) would move panel to that item successfully.
+        the parameter is null by default.
+        StaggeredViewMoveToItemDemo scene shows more details.
+        
+        return value: LoopStaggeredGridViewItem is the return value of onGetItemByItemIndex
+
         Every created item has a LoopStaggeredGridViewItem component auto attached
         */
         public void InitListView(int itemTotalCount, GridViewLayoutParam layoutParam,
             System.Func<LoopStaggeredGridView, int, LoopStaggeredGridViewItem> onGetItemByItemIndex,
-            StaggeredGridViewInitParam initParam = null)
+            StaggeredGridViewInitParam initParam = null,
+            System.Func<int,(float, float)> onGetItemSizeByItemIndex = null)
         {
             mLayoutParam = layoutParam;
             if(mLayoutParam == null)
@@ -291,6 +319,7 @@ namespace SuperScrollView
             AdjustContainerPivot(mContainerTrans);
             InitItemPool();
             mOnGetItemByItemIndex = onGetItemByItemIndex;
+            mOnGetItemSizeByItemIndex = onGetItemSizeByItemIndex;
             if (mListViewInited == true)
             {
                 Debug.LogError("LoopStaggeredGridView.InitListView method can be called only once.");
@@ -314,7 +343,7 @@ namespace SuperScrollView
             UpdateContentSize();
         }
 
-        //reset the layoutGroup param, such as column count, item width/height,padding size
+        //reset the layout param, such as column count, item width/height,padding size
         public void ResetGridViewLayoutParam(int itemTotalCount, GridViewLayoutParam layoutParam)
         {
             if(mListViewInited == false)
@@ -390,6 +419,7 @@ namespace SuperScrollView
         {
             if (mIsPointerDownInScrollBar)
             {
+                ClearAutoMoveToItemData();
                 if (mIsVertList)
                 {
                     mScrollRect.verticalNormalizedPosition = value;
@@ -398,7 +428,6 @@ namespace SuperScrollView
                 {
                     mScrollRect.horizontalNormalizedPosition = value;
                 }
-
             }
         }
 
@@ -539,10 +568,11 @@ namespace SuperScrollView
         }
 
 
-        //This method will move the scrollrect content’s position
-        //to ( the positon of itemIndex-th item + offset )
-        public void MovePanelToItemIndex(int itemIndex, float offset)
+        //This method will move the scrollrect content’s position 
+        //to ( the positon of itemIndex-th item + offset ) immediately
+        public void MovePanelToItemIndexImmediately(int itemIndex, float offset)
         {
+            ClearAutoMoveToItemData();
             mScrollRect.StopMovement();
             if (mItemTotalCount == 0 || itemIndex < 0)
             {
@@ -636,6 +666,120 @@ namespace SuperScrollView
         }
 
 
+
+        //This method will move the scrollrect content’s position 
+        //to ( the positon of itemIndex-th item + offset ) in duration seconds.
+
+        public void MovePanelToItemIndex(int itemIndex, float offset,float duration = 0)
+        {
+            ClearAutoMoveToItemData();
+            if (duration <= 0.1f)
+            {
+                MovePanelToItemIndexImmediately(itemIndex, offset);
+                return;
+            }
+            mScrollRect.StopMovement();
+            if (mItemTotalCount == 0 || itemIndex < 0)
+            {
+                return;
+            }
+            CheckAllGroupIfNeedUpdateItemPos();
+            UpdateContentSize();
+            float viewPortSize = ViewPortSize;
+            float contentSize = GetContentSize();
+            if (contentSize <= viewPortSize)
+            {
+                if (IsVertList)
+                {
+                    SetAnchoredPositionY(mContainerTrans, 0f);
+                }
+                else
+                {
+                    SetAnchoredPositionX(mContainerTrans, 0f);
+                }
+                return;
+            }
+            if (itemIndex >= mItemTotalCount)
+            {
+                itemIndex = mItemTotalCount - 1;
+            }
+            float itemAbsPos = GetItemAbsPosByItemIndex(itemIndex);
+            if (itemAbsPos < 0)
+            {
+                return;
+            }
+            mSGVAutoMoveToItemData = new SGVAutoMoveToItemData();
+            mSGVAutoMoveToItemData.mTargetItemIndex = itemIndex;
+            mSGVAutoMoveToItemData.mStartMoveTime = Time.time;
+            mSGVAutoMoveToItemData.mDuration = duration;
+            if (IsVertList)
+            {
+                float CurPosY = mContainerTrans.anchoredPosition3D.y;
+                mSGVAutoMoveToItemData.mBeginPos = CurPosY;
+                float sign = (mArrangeType == ListItemArrangeType.TopToBottom) ? 1 : -1;
+                float newYAbs = itemAbsPos + offset;
+                if (newYAbs < 0)
+                {
+                    newYAbs = 0;
+                }
+                if (contentSize - newYAbs >= viewPortSize)
+                {
+                    mSGVAutoMoveToItemData.mTargetPos = sign * newYAbs;
+                }
+                else
+                {
+                    SetAnchoredPositionY(mContainerTrans, sign * (contentSize - viewPortSize));
+                    UpdateListView(viewPortSize + 100, viewPortSize + 100, viewPortSize, viewPortSize);
+                    ClearAllTmpRecycledItem();
+                    UpdateContentSize();
+                    contentSize = GetContentSize();
+                    if (contentSize - newYAbs >= viewPortSize)
+                    {
+                        mSGVAutoMoveToItemData.mTargetPos = sign * newYAbs;
+                    }
+                    else
+                    {
+                        mSGVAutoMoveToItemData.mTargetPos = sign * (contentSize - viewPortSize);
+                    }
+                    SetAnchoredPositionY(mContainerTrans, CurPosY);
+                }
+
+            }
+            else
+            {
+                float CurPosX = mContainerTrans.anchoredPosition3D.x;
+                mSGVAutoMoveToItemData.mBeginPos = CurPosX;
+                float sign = (mArrangeType == ListItemArrangeType.RightToLeft) ? 1 : -1;
+                float newXAbs = itemAbsPos + offset;
+                if (newXAbs < 0)
+                {
+                    newXAbs = 0;
+                }
+                if (contentSize - newXAbs >= viewPortSize)
+                {
+                    mSGVAutoMoveToItemData.mTargetPos = sign * newXAbs;
+                }
+                else
+                {
+                    SetAnchoredPositionX(mContainerTrans, sign * (contentSize - viewPortSize));
+                    UpdateListView(viewPortSize + 100, viewPortSize + 100, viewPortSize, viewPortSize);
+                    ClearAllTmpRecycledItem();
+                    UpdateContentSize();
+                    contentSize = GetContentSize();
+                    if (contentSize - newXAbs >= viewPortSize)
+                    {
+                        mSGVAutoMoveToItemData.mTargetPos = sign * newXAbs;
+                    }
+                    else
+                    {
+                        mSGVAutoMoveToItemData.mTargetPos = sign * (contentSize - viewPortSize);
+                    }
+                    SetAnchoredPositionX(mContainerTrans, CurPosX);
+                }
+            }
+        }
+
+
         //To get the visible item by itemIndex. If the item is not visible, then this method return null.
         public LoopStaggeredGridViewItem GetShownItemByItemIndex(int itemIndex)
         {
@@ -699,6 +843,102 @@ namespace SuperScrollView
             if (resetPos)
             {
                 mContainerTrans.anchoredPosition3D = Vector3.zero;
+            }
+        }
+
+
+        /*
+         If you can know every item's size beforehand, you may set the onGetItemSizeByItemIndex delegate that is to return the size and padding of a given itemIndex.
+         and then when you want to move the panel to a given itemIndex, 
+         you may firstly call LoopStaggeredGridView.UpdateContentSizeUpToItemIndex(itemIndex) to ensure the LoopStaggeredGridView have made layout up to the itemIndex, 
+         and then call MovePanelToItemIndex(itemIndex) would move panel to that item successfully.
+         */
+        public void UpdateContentSizeUpToItemIndex(int itemIndex)
+        {
+            if(mItemTotalCount == 0)
+            {
+                return;
+            }
+            if(mOnGetItemSizeByItemIndex == null)
+            {
+                return;
+            }
+            if(itemIndex >= mItemTotalCount)
+            {
+                itemIndex = mItemTotalCount - 1;
+            }
+            if(itemIndex <= 0)
+            {
+                return;
+            }
+            int curMaxCreatedItemIndexCount = mItemIndexDataList.Count;
+            if (itemIndex < curMaxCreatedItemIndexCount)
+            {
+                return;
+            }
+
+            float v = float.MaxValue;
+            int groupCount = mItemGroupList.Count;
+            int groupIndex = 0;
+            float[] groupContentSize = new float[groupCount];
+            for (int i = 0; i < groupCount; ++i)
+            {
+                float size = mItemGroupList[i].GetContentPanelSizeWithLastItemPadding();
+                groupContentSize[i] = size;
+            }
+            for (int curItemIndex = curMaxCreatedItemIndexCount; curItemIndex <= itemIndex;++curItemIndex)
+            {
+                v = float.MaxValue;
+                groupIndex = 0;
+                for (int i = 0; i < groupCount; ++i)
+                {
+                    float size = groupContentSize[i];
+                    if (size < v)
+                    {
+                        v = size;
+                        groupIndex = i;
+                    }
+                }
+                var (itemSize, itemPadding) = mOnGetItemSizeByItemIndex(curItemIndex);
+                groupContentSize[groupIndex] = groupContentSize[groupIndex] + itemSize + itemPadding;
+                List<int> mItemIndexMap = mItemGroupList[groupIndex].ItemIndexMap;
+                mItemIndexMap.Add(curItemIndex);
+                ItemIndexData indexData = new ItemIndexData();
+                indexData.mGroupIndex = groupIndex;
+                indexData.mIndexInGroup = mItemIndexMap.Count - 1;
+                mItemIndexDataList.Add(indexData);
+                mItemGroupList[groupIndex].SetItemSize(indexData.mIndexInGroup, itemSize, itemPadding);
+            }
+            UpdateContentSize();
+        }
+
+
+        public void ClearAutoMoveToItemData()
+        {
+            mSGVAutoMoveToItemData = null;
+        }
+
+
+        public void UpdateAutoMoveToItem()
+        {
+            if (mSGVAutoMoveToItemData == null)
+            {
+                return;
+            }
+            float movedTime = Time.time - mSGVAutoMoveToItemData.mStartMoveTime;
+            float p = movedTime / mSGVAutoMoveToItemData.mDuration;
+            float pos = Mathf.Lerp(mSGVAutoMoveToItemData.mBeginPos, mSGVAutoMoveToItemData.mTargetPos, p);
+            if (IsVertList)
+            {
+                SetAnchoredPositionY(mContainerTrans, pos);
+            }
+            else
+            {
+                SetAnchoredPositionX(mContainerTrans, pos);
+            }
+            if (p >= 1)
+            {
+                mSGVAutoMoveToItemData = null;
             }
         }
 
@@ -1110,6 +1350,7 @@ namespace SuperScrollView
             {
                 return;
             }
+            UpdateAutoMoveToItem();
             UpdateListViewWithDefault();
             ClearAllTmpRecycledItem();
             mLastFrameContainerPos = mContainerTrans.anchoredPosition3D;

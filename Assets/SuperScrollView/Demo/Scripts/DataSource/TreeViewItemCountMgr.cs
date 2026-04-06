@@ -43,10 +43,44 @@ namespace SuperScrollView
             mIsDirty = true;
         }
 
+
+        public void AddTreeItemBeforeIndex(int addBeforeIndex,int count, bool isExpand)
+        {
+            if (addBeforeIndex < 0 || addBeforeIndex > mTreeItemDataList.Count)
+            {
+                return;
+            }
+            for (int i = addBeforeIndex; i < mTreeItemDataList.Count; ++i)
+            {
+                mTreeItemDataList[i].mTreeItemIndex = mTreeItemDataList[i].mTreeItemIndex + 1;
+            }
+            TreeViewItemCountData data = new TreeViewItemCountData();
+            data.mTreeItemIndex = addBeforeIndex;
+            data.mChildCount = count;
+            data.mIsExpand = isExpand;
+            mTreeItemDataList.Insert(addBeforeIndex,data);
+            mIsDirty = true;
+        }
+
         public void Clear()
         {
             mTreeItemDataList.Clear();
             mLastQueryResult = null;
+            mIsDirty = true;
+        }
+
+
+        public void RemoveTreeItem(int itemIndex)
+        {
+            if(itemIndex < 0 || itemIndex >= mTreeItemDataList.Count)
+            {
+                return;
+            }
+            for(int i = itemIndex+1;i < mTreeItemDataList.Count;++i)
+            {
+                mTreeItemDataList[i].mTreeItemIndex = mTreeItemDataList[i].mTreeItemIndex - 1;
+            }
+            mTreeItemDataList.RemoveAt(itemIndex);
             mIsDirty = true;
         }
 

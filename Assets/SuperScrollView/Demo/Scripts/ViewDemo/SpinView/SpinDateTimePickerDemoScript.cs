@@ -110,22 +110,18 @@ namespace SuperScrollView
             int mCurSelectedMonth = DateTime.Now.Month;
             int indexMonth = mCurSelectedMonth - mFirstMonth -1;   
             mLoopListViewMonth.MovePanelToItemIndex(indexMonth, 0);
-            mLoopListViewMonth.FinishSnapImmediately();
 
             mCurSelectedDay = DateTime.Now.Day;
             int indexDay = mCurSelectedDay - mFirstDay -1;   
             mLoopListViewDay.MovePanelToItemIndex(indexDay, 0);
-            mLoopListViewDay.FinishSnapImmediately();
 
             mCurSelectedHour = DateTime.Now.Hour;
             int indexHour = mCurSelectedHour - mFirstHour -1;   
             mLoopListViewHour.MovePanelToItemIndex(indexHour, 0);
-            mLoopListViewHour.FinishSnapImmediately();
 
             mCurSelectedMinute = DateTime.Now.Minute;
             int indexMinute = mCurSelectedMinute - mFirstMinute -1;   
             mLoopListViewMinute.MovePanelToItemIndex(indexMinute, 0);
-            mLoopListViewMinute.FinishSnapImmediately();
         }
 
         void UpdateCurSelect()

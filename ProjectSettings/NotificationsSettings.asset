@@ -3,7 +3,7 @@
         "m_Enabled": true,
         "m_EditorHideFlags": 0,
         "m_Name": "",
-        "m_EditorClassIdentifier": "",
+        "m_EditorClassIdentifier": "Unity.Notifications::Unity.Notifications.NotificationSettingsManager",
         "ToolbarIndex": 1,
         "m_iOSNotificationSettingsValues": {
             "m_Keys": [
@@ -19,8 +19,8 @@
             "m_Values": [
                 "True",
                 "7",
-                "True",
-                "True",
+                "False",
+                "False",
                 "-1",
                 "False",
                 "False",
@@ -37,8 +37,8 @@
             "m_Values": [
                 "False",
                 "0",
-                "False",
-                "com.unity3d.player.UnityPlayerActivity"
+                "True",
+                "com.yourcompany.googlelogin.CustomUnityActivity"
             ]
         },
         "DrawableResources": []

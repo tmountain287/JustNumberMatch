@@ -1,5 +1,5 @@
-﻿using Common.UI;
-using Gostop.UI;
+using Common.UI;
+using JustOneMatch.UI;
 using Spine;
 using System;
 using System.Collections;
@@ -52,8 +52,8 @@ namespace Common.Manager
             if (popup != null)
             {
                 if(!popup.AllowDuplicates && IsOpenPopup(popup))
-                {
-                    return null;
+                {                    
+                    return popup;
                 }
 
                 _initialize?.Invoke(popup);
@@ -72,14 +72,13 @@ namespace Common.Manager
                 else
                 {
                     popupStackDic.Add(popup.popupType, new List<BasePopup> { popup });
-                }
-                
+                }                
             }
-
+          
             return popup;
         }
 
-        public bool ClosePopup(PopupType _popupType, Action _action = null)
+        public bool ClosePopup(PopupType _popupType = PopupType.NONE, Action _action = null)
         {
             if (!popupStackDic.ContainsKey(_popupType))
             {
@@ -92,8 +91,13 @@ namespace Common.Manager
                 return false;
             if (!basePopups[^1].CanClose)
                 return false;
-            basePopups[^1].Close(()=>_action?.Invoke());
-            basePopups.RemoveAt(basePopups.Count - 1);
+
+            basePopups[^1].Close(() =>
+            {
+                basePopups.RemoveAt(basePopups.Count - 1);
+                _action?.Invoke();
+            });
+
             return true;
         }
 
@@ -108,6 +112,19 @@ namespace Common.Manager
                 popup.Close(_action);
                 popupStackDic = popupStackDic.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Where(x => x is not T).ToList());
             }
+        }
+
+        public T FindOpenPopup<T>() where T : BasePopup
+        {
+            foreach (List<BasePopup> list in popupStackDic.Values)
+            {
+                foreach (BasePopup p in list)
+                {
+                    if (p is T t)
+                        return t;
+                }
+            }
+            return null;
         }
 
         public void AllClosePopup(PopupType _popupType)
@@ -200,8 +217,11 @@ namespace Common.Manager
                     } 
                     else if (basePopups[^1].CanBackButton && basePopups[^1].CanClose)
                     {
-                        basePopups[^1].Close();
-                        basePopups.RemoveAt(basePopups.Count - 1);
+                        basePopups[^1].Close(()=>
+                        {
+                            basePopups.RemoveAt(basePopups.Count - 1);
+                        });
+                        
                     }
 
                 }                

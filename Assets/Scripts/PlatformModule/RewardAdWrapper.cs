@@ -1,7 +1,8 @@
-﻿using GoogleMobileAds.Api;
-using UnityEngine;
-using System.Collections;
+﻿using Common.Manager;
+using GoogleMobileAds.Api;
 using System;
+using System.Collections;
+using UnityEngine;
 
 public class RewardAdWrapper : BaseAdWrapper
 {
@@ -76,7 +77,8 @@ public class RewardAdWrapper : BaseAdWrapper
     {
         if (Application.internetReachability == NetworkReachability.NotReachable)
         {
-            OnRewardFail("온라인 상태에서만\n광고 보기가 가능합니다.\n네트워크 연결 후\n다시 시도해 주세요.");
+            string message = LocalizationManager.Instance.GetText("OfflineAd");
+            OnRewardFail(message);
             yield break;
         }
 
@@ -104,7 +106,8 @@ public class RewardAdWrapper : BaseAdWrapper
         {
             Debug.Log("[Rewarded] Not Ready (Time Out)");
             currentState = "[Rewarded] 광고 준비 안됨";
-            OnRewardFail("광고 준비가 안되었습니다.\n잠시 후 다시 시도해 주세요.");
+            string message = LocalizationManager.Instance.GetText("OfflineAd");
+            OnRewardFail(message);
         }
     }
 

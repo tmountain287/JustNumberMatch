@@ -1,96 +1,152 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-[System.Serializable]
-public class ConfigTableData
-{
-    public string ConfigIndexString;
-    public string Value;
+//[System.Serializable]
+//public class ConfigTableData
+//{
+//    public string ConfigIndexString;
+//    public string Value;
 
-    public ConfigTableData(string[] row)
-    {
-        if (row.Length >= 2)
-        {
-            ConfigIndexString = row[0].Trim();
-            Value = row[1].Trim();
-        }
-    }
-}
+//    public ConfigTableData(string[] row)
+//    {
+//        if (row.Length >= 2)
+//        {
+//            ConfigIndexString = row[0].Trim();
+//            Value = row[1].Trim();
+//        }
+//    }
+//}
 
-public class TableConfigData : BaseTableData
-{
-    public List<ConfigTableData> ConfigList { get; private set; }
-    private Dictionary<string, string> configMap;
+//public class TableConfigData : BaseTableData
+//{
+//    public List<ConfigTableData> ConfigList { get; private set; }
+//    private Dictionary<string, string> configMap;
 
-    public override void Load()
-    {
-        ConfigList = Parse(Resources.Load<EncryptedCSVData>("EncryptedCSVs/Encrypted_configtable"), row => new ConfigTableData(row));
-        configMap = ConfigList.ToDictionary(x => x.ConfigIndexString, x => x.Value);
+//    public override void Load()
+//    {
+//        ConfigList = Parse(Resources.Load<EncryptedCSVData>("EncryptedCSVs/Encrypted_configtable"), row => new ConfigTableData(row));
+//        configMap = ConfigList.ToDictionary(x => x.ConfigIndexString, x => x.Value);
 
-        ConfigData.AdOpenLevel = GetInt("AdOpenLevel");
-        ConfigData.MissionOpenLevel = GetInt("MissionOpenLevel");
-        ConfigData.AdOpenCount = GetInt("AdOpenCount");
-        ConfigData.InitMoney = GetLong("InitMoney");
-        ConfigData.InitGold = GetInt("InitGold");
-        ConfigData.InitCharacterID = GetInt("InitCharacterID");
-        ConfigData.AdGoldReward = GetInt("AdGoldReward");
-        ConfigData.RevivalMoney = GetLong("RevivalMoney");
-        ConfigData.AdRevivalMoney = GetLong("AdRevivalMoney");
-        ConfigData.NextMultipleGold = GetInt("NextMultipleGold");
-        ConfigData.InvalidGold = GetInt("InvalidGold");
-        ConfigData.FireGaugeMax = GetInt("FireGaugeMax");
-        ConfigData.FireGaugeAddValue = GetInt("FireGaugeAddValue");
-        ConfigData.FireMaxMultiple = GetInt("FireMaxMultiple");
-        ConfigData.FireMutilpleGold = GetInt("FireMutilpleGold");
-        ConfigData.AIOpenLevel = GetInt("AIOpenLevel");
-        ConfigData.AIRate = GetInt("AIRate");
-        ConfigData.FireAIRate = GetInt("FireAIRate");
-        ConfigData.SuddaOneDayFreeCount = GetInt("SuddaOneDayFreeCount");
-        ConfigData.SuddaOneDayADFreeCount = GetInt("SuddaOneDayADFreeCount");
-        ConfigData.StealPeeGold = GetInt("StealPeeGold");
-        ConfigData.AdPeeStealMaxCount = GetInt("AdPeeStealMaxCount");
-    }
+//        ConfigData.AdOpenLevel = GetInt("AdOpenLevel");
+//        ConfigData.AdOpenCountMin = GetInt("AdOpenCountMin");
+//        ConfigData.AdOpenCountMax = GetInt("AdOpenCountMax");
+//        ConfigData.InititemInfoDic.Add(ItemType.Gold, GetInt("InitGold"));
+//        ConfigData.InititemInfoDic.Add(ItemType.Hint, GetInt("InitHintCount"));
+//        ConfigData.InititemInfoDic.Add(ItemType.TimeAttackTicket, GetInt("InitTimeAttackTicketCount"));
+//        ConfigData.InititemInfoDic.Add(ItemType.Change, 0);
 
-    private int GetInt(string key, int defaultValue = 0)
-    {
-        return configMap.TryGetValue(key, out var value) && int.TryParse(value, out var result) ? result : defaultValue;
-    }
+//        ConfigData.AdsRewardGold = GetInt("AdsRewardGold");
+//        ConfigData.TodayAdsRewardGoldCount = GetInt("TodayAdsRewardGoldCount");
 
-    private long GetLong(string key, long defaultValue = 0)
-    {
-        return configMap.TryGetValue(key, out var value) && long.TryParse(value, out var result) ? result : defaultValue;
-    }
+//        ConfigData.NeedTimeAttckTicketCountDic.Add(DifficultyType.Easy, GetInt("EasyTimeAttackTicketCount"));
+//        ConfigData.NeedTimeAttckTicketCountDic.Add(DifficultyType.Normal, GetInt("NormalTimeAttackTicketCount"));
+//        ConfigData.NeedTimeAttckTicketCountDic.Add(DifficultyType.Hard, GetInt("HardTimeAttackTicketCount"));
 
-    private string GetString(string key, string defaultValue = "")
-    {
-        return configMap.TryGetValue(key, out var value) ? value : defaultValue;
-    }
-}
+//        //ConfigData.RewardHintStageDic.Add(DifficultyType.Easy, GetInt("EasyRewardHint"));
+//        //ConfigData.RewardHintStageDic.Add(DifficultyType.Normal, GetInt("NormalRewardHint"));
+//        //ConfigData.RewardHintStageDic.Add(DifficultyType.Hard, GetInt("HardRewardHint"));
+
+//        //ConfigData.RewardTimeAttackTicketStageDic.Add(DifficultyType.Easy, GetInt("EasyRewardTimeAttackTicket"));
+//        //ConfigData.RewardTimeAttackTicketStageDic.Add(DifficultyType.Normal, GetInt("NormalRewardTimeAttackTicket"));
+//        //ConfigData.RewardTimeAttackTicketStageDic.Add(DifficultyType.Hard, GetInt("HardRewardTimeAttackTicket"));
+
+//        //ConfigData.RewardGoldDic.Add(DifficultyType.Easy, GetInt("EasyRewardGold"));
+//        //ConfigData.RewardGoldDic.Add(DifficultyType.Normal, GetInt("NormalRewardGold"));
+//        //ConfigData.RewardGoldDic.Add(DifficultyType.Hard, GetInt("HardRewardGold"));
+
+//        ConfigData.UnlockNormalStageLevel = GetInt("UnlockNormalStageLevel");
+//        ConfigData.UnlockHardStageLevel = GetInt("UnlockHardStageLevel");
+
+//        ConfigData.UnlockTimeAttackLevel = GetInt("UnlockTimeAttackLevel");
+//        ConfigData.UnlockUnlimtedLevel = GetInt("UnlockUnlimtedLevel");
+
+//        ConfigData.BossTimeDic.Add(DifficultyType.Easy, GetInt("BossTimeEasy"));
+//        ConfigData.BossTimeDic.Add(DifficultyType.Normal, GetInt("BossTimeNormal"));
+//        ConfigData.BossTimeDic.Add(DifficultyType.Hard, GetInt("BossTimeHard"));
+
+//        ConfigData.UnlockModeLevelList = new List<int>{ ConfigData.UnlockNormalStageLevel, ConfigData.UnlockHardStageLevel,
+//        ConfigData.UnlockTimeAttackLevel,ConfigData.UnlockUnlimtedLevel};
+//    }
+
+//    private int GetInt(string key, int defaultValue = 0)
+//    {
+//        return configMap.TryGetValue(key, out var value) && int.TryParse(value, out var result) ? result : defaultValue;
+//    }
+
+//    private long GetLong(string key, long defaultValue = 0)
+//    {
+//        return configMap.TryGetValue(key, out var value) && long.TryParse(value, out var result) ? result : defaultValue;
+//    }
+
+//    private string GetString(string key, string defaultValue = "")
+//    {
+//        return configMap.TryGetValue(key, out var value) ? value : defaultValue;
+//    }
+//}
 
 public static class ConfigData
 {
-    public static int AdOpenLevel;
-    public static int MissionOpenLevel;
-    public static int AdOpenCount;
-    public static long InitMoney;
-    public static int InitGold;
-    public static int InitCharacterID;
-    public static int AdGoldReward;
-    public static long RevivalMoney;
-    public static long AdRevivalMoney;
-    public static int NextMultipleGold;
-    public static int InvalidGold;
-    public static int FireGaugeMax;
-    public static int FireGaugeAddValue;
-    public static int FireMaxMultiple;
-    public static int FireMutilpleGold;
-    public static int AIOpenLevel;
-    public static int AIRate;
-    public static int FireAIRate;
-    public static int SuddaOneDayFreeCount;
-    public static int SuddaOneDayADFreeCount;
-    public static int StealPeeGold;
-    public static int AdPeeStealMaxCount;
+    public static int AdOpenLevel = 10;
+    public static int AdOpenCountMin = 2;
+    public static int AdOpenCountMax = 5;
+
+    public static Dictionary<ItemType, int> InititemInfoDic = new Dictionary<ItemType, int>
+    {
+        { ItemType.Gold, 500 },
+        { ItemType.Hint, 3 },
+        { ItemType.TimeAttackTicket, 0 },
+        { ItemType.Change, 0 }
+    };
+
+    public static int AdsRewardGold = 50;
+    public static int TodayAdsRewardGoldCount = 5;
+
+    public static Dictionary<DifficultyType, int> NeedTimeAttckTicketCountDic = new Dictionary<DifficultyType, int>
+    {
+        {DifficultyType.Easy, 1 },
+        {DifficultyType.Normal, 2 },
+        {DifficultyType.Hard, 3 }
+    };
+    
+    /// <summary>보스 스테이지 제한 시간(초, 최대 시간).</summary>
+    public static Dictionary<DifficultyType, int> BossTimeDic = new Dictionary<DifficultyType, int>
+    {
+        {DifficultyType.Easy, 50 },
+        {DifficultyType.Normal, 140 },
+        {DifficultyType.Hard, 200 }
+    };
+
+    /// <summary>
+    /// 별 3개 각각의 임계값(0~100). 남은 시간이 (최대 시간 × 퍼센트 / 100) 이하가 되면 해당 별 소모.
+    /// (기존 초 단위: Easy 60/40/0, Normal 80/30/0, Hard 120/50/0 과 동등한 비율)
+    /// </summary>
+    public static Dictionary<DifficultyType, List<int>> BossTimeStarDic = new Dictionary<DifficultyType, List<int>>
+    {
+        {DifficultyType.Easy, new List<int> { 70, 40, 0 } },
+        {DifficultyType.Normal, new List<int> { 60, 30, 0 }},
+        {DifficultyType.Hard, new List<int> { 60, 30, 0 } }
+    };
+
+    public static int UnlockNormalStageLevel;
+    public static int UnlockHardStageLevel;
+
+    public static int UnlockTimeAttackLevel;
+    public static int UnlockUnlimtedLevel;
+
+    public static List<int> UnlockModeLevelList = new List<int>
+    {
+        10,20,25,100
+    };
+
+    public static Dictionary<DifficultyType, int> BossStageStepDic = new Dictionary<DifficultyType, int>
+     {
+        {DifficultyType.Easy, 20 },
+        {DifficultyType.Normal, 25 },
+        {DifficultyType.Hard, 30 }
+    };
+
+    /// <summary>프리미엄 팩(AdsSaleRemove) 세일 유효 기간(초). 기본 3일.</summary>
+    public static int PremiumPackSaleDurationSeconds = 3 * 24 * 60 * 60;
 }

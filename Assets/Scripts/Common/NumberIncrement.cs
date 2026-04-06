@@ -15,7 +15,7 @@ namespace Common.UI
         [SerializeField] private Text numberText = null;
         [SerializeField] private float duration = 0.5f;
         [SerializeField] private bool useZero = true;
-        [SerializeField] private bool useKoreaUnit = true;
+        [SerializeField] private bool useKoreaUnit = false;
         #endregion
 
         private long currentValue = 0;

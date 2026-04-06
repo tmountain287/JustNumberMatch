@@ -31,7 +31,7 @@ namespace SuperScrollView
                 RecycleItemReal(tViewItem);
             }
         }
-        public LoopGridViewItem GetItem(int itemIndexForSearch, bool isOn = true)
+        public LoopGridViewItem GetItem(int itemIndexForSearch)
         {
             mCurItemIdCount++;
             LoopGridViewItem tItem = null;
@@ -52,22 +52,20 @@ namespace SuperScrollView
                     tItem = mTmpPooledItemList[count - 1];
                     mTmpPooledItemList.RemoveAt(count - 1);
                 }
-                if(isOn)
-                    tItem.gameObject.SetActive(true);
+                tItem.gameObject.SetActive(true);
             }
             else
             {
                 int count = mPooledItemList.Count;
                 if (count == 0)
                 {
-                    tItem = CreateItem(isOn);
+                    tItem = CreateItem();
                 }
                 else
                 {
                     tItem = mPooledItemList[count - 1];
                     mPooledItemList.RemoveAt(count - 1);
-                    if (isOn)
-                        tItem.gameObject.SetActive(true);
+                    tItem.gameObject.SetActive(true);
                 }
             }
             tItem.ItemId = mCurItemIdCount;
@@ -85,11 +83,11 @@ namespace SuperScrollView
             }
             mPooledItemList.Clear();
         }
-        public LoopGridViewItem CreateItem(bool isOn = true)
+        public LoopGridViewItem CreateItem()
         {
 
             GameObject go = GameObject.Instantiate<GameObject>(mPrefabObj, Vector3.zero, Quaternion.identity, mItemParent);
-            go.SetActive(isOn);
+            go.SetActive(true);
             RectTransform rf = go.GetComponent<RectTransform>();
             rf.localScale = Vector3.one;
             rf.anchoredPosition3D = Vector3.zero;

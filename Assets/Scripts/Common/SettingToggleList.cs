@@ -40,10 +40,10 @@ namespace Common.UI
 
         private void OnEnable()
         {
-            isInitializing = true;
-            int index = PlayerPrefsManager.Instance.GetPlayerPrefsValue(prefsKey, defaltValue);            
-            toggleList[index].isOn = true;
-            isInitializing = false;
+            //isInitializing = true;
+            //float index = PlayerPrefsManager.Instance.GetPlayerPrefsValue(prefsKey, defaltValue);            
+            //toggleList[index].isOn = true;
+            //isInitializing = false;
         }
 
         public virtual void SetToggle(int _index)

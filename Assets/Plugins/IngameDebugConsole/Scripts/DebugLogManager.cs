@@ -440,10 +440,10 @@ namespace IngameDebugConsole
 
 		private void Awake()
 		{
-#if !UNITY_EDITOR && !TEST
-			        gameObject.SetActive(false);
-					return;
-#endif
+//#if !UNITY_EDITOR && !TEST
+//			        gameObject.SetActive(false);
+//					return;
+//#endif
 
 			// Only one instance of debug console is allowed
 			if ( !Instance )

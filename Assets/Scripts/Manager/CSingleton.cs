@@ -10,7 +10,7 @@ public abstract class CSingletonMonobehaviour<T> : MonoBehaviour where T : MonoB
         {
             if (null == instance)
             {
-                instance = FindObjectOfType(typeof(T)) as T;
+                instance = FindAnyObjectByType(typeof(T)) as T;
                 if (null == instance)
                 {
                     GameObject obj = new GameObject(typeof(T).Name);

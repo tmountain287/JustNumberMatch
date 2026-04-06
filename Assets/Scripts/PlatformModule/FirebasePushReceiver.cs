@@ -1,16 +1,21 @@
-﻿using Firebase;
+using Cysharp.Threading.Tasks;
+using Firebase;
+using Firebase.Extensions;
 using Firebase.Messaging;
+using System.Threading;
 using UnityEngine;
 
 public class FirebasePushReceiver : MonoSingletonDont<FirebasePushReceiver>
 {
     public string PushToken { get; private set; } = string.Empty;
+
+    public async UniTask RegisterAsync(CancellationToken ct = default)
+    {
 #if UNITY_IOS
-    public async void Register()
-    {        await FirebaseMessaging.RequestPermissionAsync();
-#else
-    public void Register()
-    { 
+        // iOS permission 요청도 Future 기반이라, 종료/파괴 시 취소되도록 await + cancellation 적용
+        await FirebaseMessaging.RequestPermissionAsync()
+            .AsUniTask()
+            .AttachExternalCancellation(ct);
 #endif
         FirebaseMessaging.TokenReceived += OnTokenReceived;
         FirebaseMessaging.MessageReceived += OnMessageReceived;
@@ -23,6 +28,12 @@ public class FirebasePushReceiver : MonoSingletonDont<FirebasePushReceiver>
         FirebaseMessaging.MessageReceived -= OnMessageReceived;
     }
 
+    protected override void OnDestroy()
+    {
+        Unregister();
+        base.OnDestroy();
+    }
+
     private void OnTokenReceived(object sender, TokenReceivedEventArgs token)
     {
         PushToken = token.Token;
@@ -31,6 +42,9 @@ public class FirebasePushReceiver : MonoSingletonDont<FirebasePushReceiver>
 
     private void OnMessageReceived(object sender, MessageReceivedEventArgs e)
     {
+        string messageId = e?.Message?.MessageId ?? "";
+        string campaign = e?.Message?.Data?.ContainsKey("campaign") == true ? e.Message.Data["campaign"] : null;
+        GameAnalyticsHelper.LogPushReceived(messageId, campaign);
         Debug.Log($"[FCM] Push received from: {e.Message.From}");
         if (e.Message.Notification != null)
         {

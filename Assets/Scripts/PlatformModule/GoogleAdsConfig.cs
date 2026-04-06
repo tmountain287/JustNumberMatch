@@ -9,6 +9,7 @@ public class PlatformAdID
     public string Platform;
     public string InterstitialAdUnitId;
     public string RewardedAdUnitId;
+    public string BannerAdUnitId;
 }
 
 [CreateAssetMenu(fileName = "GoogleAdsConfig", menuName = "Google/GoogleAdsConfig", order = 0)]

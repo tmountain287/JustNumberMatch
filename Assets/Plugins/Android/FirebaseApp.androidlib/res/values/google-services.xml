@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@string/gcm_defaultSenderId,@string/google_storage_bucket,@string/project_id,@string/google_api_key,@string/google_crash_reporting_api_key,@string/google_app_id,@string/default_android_client_id,@string/default_web_client_id">
-  <string name="gcm_defaultSenderId" translatable="false">630199565601</string>
-  <string name="google_storage_bucket" translatable="false">kingdomhub-choigosugostop.firebasestorage.app</string>
-  <string name="project_id" translatable="false">kingdomhub-choigosugostop</string>
-  <string name="google_api_key" translatable="false">AIzaSyD4tpsOoTkQ_HmMe4PFhs_j0UQ-N0vM6cs</string>
-  <string name="google_crash_reporting_api_key" translatable="false">AIzaSyD4tpsOoTkQ_HmMe4PFhs_j0UQ-N0vM6cs</string>
-  <string name="google_app_id" translatable="false">1:630199565601:android:88768f6cd93e7e830c5260</string>
-  <string name="default_android_client_id" translatable="false">630199565601-gnmdmadroatmjhqvj19i2vr6juc9bovb.apps.googleusercontent.com</string>
-  <string name="default_web_client_id" translatable="false">630199565601-k4r0g0dimt23rqaemikjfd7l3tii0i30.apps.googleusercontent.com</string>
+  <string name="gcm_defaultSenderId" translatable="false">63697920007</string>
+  <string name="google_storage_bucket" translatable="false">crowncardquest.firebasestorage.app</string>
+  <string name="project_id" translatable="false">crowncardquest</string>
+  <string name="google_api_key" translatable="false">AIzaSyC3_UHegnJUscFaIxAUf6te4MI4hFEr0H0</string>
+  <string name="google_crash_reporting_api_key" translatable="false">AIzaSyC3_UHegnJUscFaIxAUf6te4MI4hFEr0H0</string>
+  <string name="google_app_id" translatable="false">1:63697920007:android:b97f77ea4b6119813a4aa2</string>
+  <string name="default_android_client_id" translatable="false">63697920007-4d58jhbsnmn6rq43dcgkind0neegtq00.apps.googleusercontent.com</string>
+  <string name="default_web_client_id" translatable="false">63697920007-14c9ksoeh9btckedf2s4epa5jc7g1hvt.apps.googleusercontent.com</string>
 </resources>

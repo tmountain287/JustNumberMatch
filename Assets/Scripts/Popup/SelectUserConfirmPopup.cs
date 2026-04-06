@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Gostop.UI
+namespace JustOneMatch.UI
 {
     public class SelectUserConfirmPopup : BasePopup
     {
@@ -21,8 +21,9 @@ namespace Gostop.UI
             base.Start();
             cancleButton.onClick.AddListener(() =>
             {
-                ClosePopup();
-                PopupManager.Instance.OpenPopup<SelectUserPopup>().Initialize();
+                ClosePopup(()=>
+                PopupManager.Instance.OpenPopup<SelectUserPopup>().Initialize());
+                
             });
 
             confirmButton.onClick.AddListener(() =>
@@ -38,14 +39,14 @@ namespace Gostop.UI
 
             if (!_isCurrent)
             {
-                beforePanel.SetPanel(_userData);
+                beforePanel.SetPanel(false, _userData);
             }
             else
             {
-                currentPanel.SetPanel(_userData);
+                currentPanel.SetPanel(true, _userData);
             }
 
-            onConfirmClick = ()=>
+            onConfirmClick = () =>
             {
                 AsyncSaveDataMerge(_isCurrent, _userData, _onComplete);
             };
@@ -54,10 +55,13 @@ namespace Gostop.UI
         private async void AsyncSaveDataMerge(bool _isCurrent, UserData _userData, Action<bool> _onComplete)
         {
             UIManager.Instance.ShowLoading();
-            await NetworkManager.Instance.SaveRecordMerge(_userData);
+            string data = SecurePlayerPrefs.Encrypt(_userData);
+            await NetworkManager.Instance.ApplyOverwriteAsync(data);
             UIManager.Instance.HideLoading();
-            ClosePopup();
-            PopupManager.Instance.OpenPopup<SelectUserSavePopup>().Initialize(_isCurrent, _userData, _onComplete);
+            ClosePopup(()=>
+            {
+                PopupManager.Instance.OpenPopup<SelectUserSavePopup>().Initialize(_isCurrent, _userData, _onComplete);
+            });           
         }
     }
 }
