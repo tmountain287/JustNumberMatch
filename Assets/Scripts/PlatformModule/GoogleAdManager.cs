@@ -21,7 +21,7 @@ public class GoogleAdManager : MonoSingletonDont<GoogleAdManager>
     private string rewardedAdUnitId = Application.platform == RuntimePlatform.IPhonePlayer
         ? "ca-app-pub-3940256099942544/1712485313"
         : "ca-app-pub-3940256099942544/5224354917";
-    // 앵커 적응형 배너 샘플 ID: https://developers.google.com/admob/unity/banner/anchored-adaptive?hl=ko
+    // 표준 배너 샘플 ID: https://developers.google.com/admob/unity/banner
     private string bannerAdUnitId = Application.platform == RuntimePlatform.IPhonePlayer
         ? "ca-app-pub-3940256099942544/2435281174"
         : "ca-app-pub-3940256099942544/9214589741";
@@ -150,13 +150,13 @@ public class GoogleAdManager : MonoSingletonDont<GoogleAdManager>
             return;
         }
 
-        if (ShouldShowBannerForUi(lastUiTypeForBanner))
+        //if (ShouldShowBannerForUi(lastUiTypeForBanner))
             bannerAd.EnsureLoadedAndVisible();
-        else
-        {
-            bannerAd.Hide();
-            NotifyBannerBottomInsetPixels(0f);
-        }
+        //else
+        //{
+        //    bannerAd.Hide();
+        //    NotifyBannerBottomInsetPixels(0f);
+        //}
     }
 
     protected override void OnDestroy()

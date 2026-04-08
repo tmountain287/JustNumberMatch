@@ -2,7 +2,7 @@
 using System;
 using UnityEngine;
 
-// 앵커 적응형: https://developers.google.com/admob/unity/banner/anchored-adaptive?hl=ko
+// 표준 배너(320×50): https://developers.google.com/admob/unity/banner
 public class BannerAdWrapper
 {
     private readonly string adUnitId;
@@ -68,9 +68,7 @@ public class BannerAdWrapper
 
     private void CreateBanner()
     {
-        int widthDp = MobileAds.Utils.GetDeviceSafeWidth();
-        AdSize adaptiveSize = AdSize.GetCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(widthDp);
-        bannerView = new BannerView(adUnitId, adaptiveSize, position);
+        bannerView = new BannerView(adUnitId, AdSize.Banner, position);
         RegisterEvents();
     }
 
