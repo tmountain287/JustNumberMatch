@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   adsIDList:
   - Platform: AOS
-    InterstitialAdUnitId: ca-app-pub-5031274148872505/9049740848
-    RewardedAdUnitId: ca-app-pub-5031274148872505/6640034076
+    InterstitialAdUnitId: ca-app-pub-5031274148872505/6050307176
+    RewardedAdUnitId: ca-app-pub-5031274148872505/2553703267
     BannerAdUnitId: 
   - Platform: IOS
     InterstitialAdUnitId: ca-app-pub-5031274148872505/3367724582

@@ -17,14 +17,13 @@ namespace Common.UI
             DEBUG,
         }
 
-        [SerializeField] private Type type = Type.NONE;
-        [SerializeField] private TopUI topUI = null;
+        [SerializeField] private Type type = Type.NONE;        
 
         public Type UIType { get => type;}     
         
         protected virtual void OnEnable()
         {
-            UIManager.Instance.TopUI = topUI;
+            
         }
 
         public void SetUI(Type _type)

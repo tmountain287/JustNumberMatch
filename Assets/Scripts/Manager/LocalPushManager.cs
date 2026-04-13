@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -68,7 +68,6 @@ public class LocalPushManager : MonoSingletonDont<LocalPushManager>
         {
             while (!req.IsFinished)
                 yield return null;
-            GameAnalyticsHelper.LogPushPermissionResult(req.Granted);
             if (Debug.isDebugBuild)
                 Debug.Log($"[LocalPush] iOS Notification Authorization finished: granted={req.Granted}, error={req.Error}");
         }

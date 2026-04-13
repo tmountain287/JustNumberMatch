@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>63697920007-abqumbhmsjhcnv858q4topcfiueo5ed6.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.63697920007-abqumbhmsjhcnv858q4topcfiueo5ed6</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>63697920007-4d58jhbsnmn6rq43dcgkind0neegtq00.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAFQi6KNyyHddcMT_YApwtG2s40EMavXLs</string>
+	<key>GCM_SENDER_ID</key>
+	<string>63697920007</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.justthislab.crowncardquest</string>
+	<key>PROJECT_ID</key>
+	<string>crowncardquest</string>
+	<key>STORAGE_BUCKET</key>
+	<string>crowncardquest.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:63697920007:ios:b6c93772e1e3c16f3a4aa2</string>
+</dict>
+</plist>

@@ -1,5 +1,5 @@
 ﻿using Common.Manager;using Common.UI;
-using JustOneMatch.UI;
+using UI.Popup;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -56,10 +56,7 @@ public class BottomUI : MonoBehaviour
 
         timeTrialButton.onClick.AddListener(() =>
         {
-            PopupManager.Instance.OpenPopup<SurvivalModePopup>().Initialize(() =>
-            {
-                GameMgr.Instance.StartInfiniteMode();
-            });
+           
         });
     }
 

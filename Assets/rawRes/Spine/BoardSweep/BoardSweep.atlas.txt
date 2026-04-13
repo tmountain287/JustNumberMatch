@@ -1,0 +1,7 @@
+BoardSweep.png
+size:152,232
+filter:Linear,Linear
+02
+bounds:2,67,148,161
+03
+bounds:2,2,103,63

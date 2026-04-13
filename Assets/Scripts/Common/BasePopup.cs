@@ -22,8 +22,7 @@ namespace Common.UI
             FADE = 6,
             POP_H = 7,
         }
-
-        [SerializeField] private TopUI topUI = null;
+        
         [SerializeField] private CanvasGroup canvasGroup = null;
         [SerializeField] public PopupType popupType = PopupType.NONE;
         [SerializeField] private bool canBackButton = true;
@@ -45,8 +44,6 @@ namespace Common.UI
 
         protected Action OnScaleUpdate = null;
 
-        private TopUI currentTopUI = null;
-
         protected virtual void Start()
         {
             if (closeButton != null)
@@ -56,23 +53,13 @@ namespace Common.UI
 
             closeButtons?.ForEach(button => button.onClick.AddListener(() => ClosePopup()));
         }
-
+       
         protected virtual void OnDisable()
         {
-            if (topUI != null)
-            {               
-                UIManager.Instance.TopUI = currentTopUI;
-            }
-        }
 
+        }
         protected virtual void OnEnable()
         {
-            if (topUI != null)
-            {
-                currentTopUI = UIManager.Instance.TopUI;
-                UIManager.Instance.TopUI = topUI;
-            }
-
             SetBlocksRaycasts(false);
             if (useBack)
             {

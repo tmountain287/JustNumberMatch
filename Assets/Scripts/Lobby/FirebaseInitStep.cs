@@ -1,17 +1,17 @@
-using Cysharp.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-public sealed class FirebaseInitStep : ILobbyFlowStep
+public sealed class FirebaseInitStep : IIntroFlowStep
 {
     public string Name => "FirebaseInit";
     public float Weight => 0.18f;
 
-    public bool CanRun(LobbyFlowContext ctx)
+    public bool CanRun(IntroFlowContext ctx)
     {
         return Application.internetReachability != NetworkReachability.NotReachable;
     }
 
-    public async UniTask<FlowResult> RunAsync(LobbyFlowContext ctx)
+    public async UniTask<FlowResult> RunAsync(IntroFlowContext ctx)
     {
         ctx.SetTextKey?.Invoke("Checking account");
 

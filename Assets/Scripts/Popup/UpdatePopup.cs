@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using Common.UI;
 
-namespace JustOneMatch.UI
+namespace UI.Popup
 {
     public class UpdatePopup : BasePopup
     {

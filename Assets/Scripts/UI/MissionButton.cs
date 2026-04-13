@@ -1,5 +1,5 @@
 ﻿using Common.Manager;
-using JustOneMatch.UI;
+using UI.Popup;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;

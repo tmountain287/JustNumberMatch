@@ -1,7 +1,7 @@
-using Common.Manager;
+﻿using Common.Manager;
 using Common.UI;
 using DG.Tweening;
-using JustOneMatch.UI;
+using UI.Popup;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,16 +16,14 @@ public class UIManager : MonoSingleton<UIManager>
     [SerializeField] private GameObject backAds = null;
     [SerializeField] private GameObject block = null;
     [SerializeField] private RewardEffectUI rewardEffectUI = null;
-    #endregion
-
-    private TopUI topUI = null;
+    #endregion    
 
     private Coroutine deferredPremiumSalePopupCoroutine;
 
     public bool IsLoading { get { return loading.activeSelf; } }
 
     public BaseUI.Type CurrentUIType { get => currentUIType; set => currentUIType = value; }
-    public TopUI TopUI { get => topUI; set => topUI = value; }
+    
 
     private BaseUI.Type currentUIType = BaseUI.Type.INTRO;
 
@@ -85,7 +83,6 @@ public class UIManager : MonoSingleton<UIManager>
         {
             uiList.ForEach(x => x.SetUI(_type));
             CurrentUIType = _type;
-            GameAnalyticsHelper.LogScreenView("Screen_" + _type.ToString(), _type.ToString());
             GoogleAdManager.Instance.UpdateBannerForCurrentUI(_type);
 
             if (_type == BaseUI.Type.STAGE)
@@ -117,7 +114,7 @@ public class UIManager : MonoSingleton<UIManager>
         deferredPremiumSalePopupCoroutine = null;
     }
 
-    public void ShowRewardedAd(Action<string> _onSuccess, Action _onFail = null, string placement = "unknown")
+    public void ShowRewardedAd(Action<string> _onSuccess, Action _onFail = null)
     {
         ShowLoading();
         GoogleAdManager.Instance.ShowRewardedAd((adapter) =>
@@ -132,8 +129,7 @@ public class UIManager : MonoSingleton<UIManager>
             HideLoading();
             PopupManager.Instance.OpenMessageBoxPopup("", str);
             _onFail?.Invoke();
-        },
-        placement);
+        });
     }
 
     public void OnUI(BaseUI.Type _type, bool _isOn)

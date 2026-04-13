@@ -1,5 +1,5 @@
-using Common.Manager;
-using JustOneMatch.UI;
+﻿using Common.Manager;
+using UI.Popup;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,7 +23,7 @@ public class AdsGoldButton : MonoBehaviour
             {
                 UserDataManager.PlayAdsRewardGold();
                 PopupManager.Instance.OpenPopup<AdsRewardCompletePopup>();
-            }, null, "gold");
+            }, null);
         });        
     }
 

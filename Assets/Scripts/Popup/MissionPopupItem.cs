@@ -1,4 +1,4 @@
-﻿using JustOneMatch.UI;
+﻿using UI.Popup;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -27,14 +27,14 @@ public class MissionPopupItem : MonoBehaviour
     {
         carlmButton.onClick.AddListener(() =>
         {
-            UIManager.Instance.TopUI.SetBlockAutoUpdate(true);
+          //  UIManager.Instance.TopUI.SetBlockAutoUpdate(true);
 
             int count = Mathf.Min(missionData.rewardValue, 15);
 
-            UIManager.Instance.OnEffect(missionData.rewardItemType, count, rewardItem.transform.position, UIManager.Instance.TopUI.GetIcon(missionData.rewardItemType), ()=>
-            {
-                UIManager.Instance.TopUI.SetBlockAutoUpdate(false);
-            });
+            //UIManager.Instance.OnEffect(missionData.rewardItemType, count, rewardItem.transform.position, UIManager.Instance.TopUI.GetIcon(missionData.rewardItemType), ()=>
+            //{
+            //    UIManager.Instance.TopUI.SetBlockAutoUpdate(false);
+            //});
 
             MissionData m = UserDataManager.MissionRewared(missionData.id);
             GameAnalyticsHelper.LogMissionComplete(missionData.id, missionData.rewardItemType.ToString());

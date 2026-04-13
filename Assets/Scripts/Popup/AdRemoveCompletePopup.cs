@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.Purchasing;
 using UnityEngine.UI;
 
-namespace JustOneMatch.UI
+namespace UI.Popup
 {
     public class AdRemoveCompletePopup : BasePopup
     {

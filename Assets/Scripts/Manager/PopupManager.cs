@@ -1,5 +1,5 @@
-using Common.UI;
-using JustOneMatch.UI;
+﻿using Common.UI;
+using UI.Popup;
 using Spine;
 using System;
 using System.Collections;

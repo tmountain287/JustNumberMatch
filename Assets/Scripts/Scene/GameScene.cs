@@ -30,6 +30,6 @@ public class GameScene : MonoBehaviour
         yield return new WaitForSeconds(delayTime);
         LocalPushManager.Instance.Initialize();
         yield return new WaitForSeconds(delayTime);
-        //UIManager.Instance.ShowUI(Common.UI.BaseUI.Type.LOBBY);
+        UIManager.Instance.ShowUI(Common.UI.BaseUI.Type.LOBBY);
     }
 }

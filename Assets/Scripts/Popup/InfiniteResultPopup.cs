@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Util;
 
-namespace JustOneMatch.UI
+namespace UI.Popup
 {
     public class InfiniteResultPopup : BasePopup
     {

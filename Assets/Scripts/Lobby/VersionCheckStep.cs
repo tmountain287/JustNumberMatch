@@ -1,18 +1,18 @@
-using Cysharp.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 using UnityEngine;
 using System;
 
-public sealed class VersionCheckStep : ILobbyFlowStep
+public sealed class VersionCheckStep : IIntroFlowStep
 {
     public string Name => "VersionCheck";
     public float Weight => 0.18f;
 
-    public bool CanRun(LobbyFlowContext ctx)
+    public bool CanRun(IntroFlowContext ctx)
     {
         return Application.internetReachability != NetworkReachability.NotReachable;
     }
 
-    public async UniTask<FlowResult> RunAsync(LobbyFlowContext ctx)
+    public async UniTask<FlowResult> RunAsync(IntroFlowContext ctx)
     {
         ctx.SetTextKey?.Invoke("Checking version");
 
@@ -22,34 +22,28 @@ public sealed class VersionCheckStep : ILobbyFlowStep
 
         if (info == null)
         {
-            GameAnalyticsHelper.LogVersionCheckResult("fail", current, serverVersion);
             return FlowResult.Continue;
         }
 
         if (info.maintenance)
         {
             Debug.Log("유지보수 모드");
-            GameAnalyticsHelper.LogVersionCheckResult("maintenance", current, serverVersion);
             return FlowResult.Stop;
         }
 
         if (IsOlder(current, info.android_min))
         {
             Debug.Log("강제 업데이트");
-            GameAnalyticsHelper.LogVersionCheckResult("force_update", current, serverVersion);
             return FlowResult.Stop;
         }
 
         if (IsOlder(current, info.android_latest))
         {
             Debug.Log("업데이트 권유");
-            GameAnalyticsHelper.LogVersionCheckResult("update_available", current, serverVersion);
             return FlowResult.Continue;
         }
 
         Debug.Log("버전 OK");
-        GameAnalyticsHelper.LogVersionCheckResult("ok", current, serverVersion);
-
         return FlowResult.Continue;
     }
 

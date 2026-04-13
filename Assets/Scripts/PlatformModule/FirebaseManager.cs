@@ -1,4 +1,4 @@
-using Cysharp.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 using Firebase;
 using Firebase.Analytics;
 using Firebase.Auth;
@@ -134,9 +134,6 @@ public class FirebaseManager : MonoSingletonDont<FirebaseManager>
         }
 
         FirebaseUserData.SaveUserInfo(user.UserId, user.Email, user.DisplayName);
-        GameAnalyticsHelper.LogLogin("anonymous");
-        GameAnalyticsHelper.SetLoginMethod("anonymous");
-        GameAnalyticsHelper.LogAppOpen("normal");
 
         Debug.Log($"Auto Login - uid: {user.UserId}, name: {user.DisplayName ?? "(anonymous)"}");
 
@@ -298,8 +295,6 @@ public class FirebaseManager : MonoSingletonDont<FirebaseManager>
                 Debug.Log($"[Auth] Link success uid={linkRes.User.UserId}");
 
                 SaveUser(linkRes.User);
-                GameAnalyticsHelper.LogSignUp("google_or_apple");
-                GameAnalyticsHelper.SetLoginMethod(FirebaseManager.Instance.IsLinking ? "google_or_apple" : "anonymous");
                 onLoginSuccess?.Invoke();
                 return;
             }

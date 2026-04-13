@@ -1,4 +1,4 @@
-using Common.Manager;
+﻿using Common.Manager;
 using Common.UI;
 using NUnit.Framework;
 using System;
@@ -10,7 +10,7 @@ using UnityEngine;
 using UnityEngine.Purchasing;
 using UnityEngine.UI;
 
-namespace JustOneMatch.UI
+namespace UI.Popup
 {
     public class ShopPopup : BasePopup
     {
@@ -72,7 +72,8 @@ namespace JustOneMatch.UI
                             }
                             else
                             {
-                                PopupManager.Instance.OpenMessageBoxPopup("", error);
+                                if (error != "UserCancelled")
+                                    PopupManager.Instance.OpenMessageBoxPopup("", error);
                             }
                             UIManager.Instance.HideLoading();
                         });

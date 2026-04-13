@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using Common.UI;
 using System;
 
-namespace JustOneMatch.UI
+namespace UI.Popup
 {
     public class NickNameChangePopup : BasePopup
     {

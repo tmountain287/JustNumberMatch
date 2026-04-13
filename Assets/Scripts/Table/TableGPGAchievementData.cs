@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -16,7 +16,7 @@ public class GPGAchievementData
     public string id;
     public string name;
     public GPGAchievementType achievementType;
-    public DifficultyType difficultyType;
+   
     public long value;
 
     public GPGAchievementData(string[] row)
@@ -40,16 +40,7 @@ public class GPGAchievementData
                 achievementType = GPGAchievementType.StageClear; // 기본값으로 처리
             }
 
-            if (int.TryParse(row[4], out int difficultyValue) && System.Enum.IsDefined(typeof(DifficultyType), difficultyValue))
-            {
-                difficultyType = (DifficultyType)difficultyValue;
-            }
-            else
-            {
-                Debug.LogWarning($"Invalid difficulty value: {row[4]} for GPGAchievementData ID {id}");
-                difficultyType = DifficultyType.Easy; // 기본값으로 처리
-            }
-
+   
             long.TryParse(row[5], out value);
         }
     }

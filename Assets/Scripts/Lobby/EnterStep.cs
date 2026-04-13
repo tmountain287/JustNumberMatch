@@ -1,19 +1,19 @@
-using Common.UI;
+﻿using Common.UI;
 using Cysharp.Threading.Tasks;
 using System;
 using UnityEngine;
 
-public sealed class EnterStep : ILobbyFlowStep
+public sealed class EnterStep : IIntroFlowStep
 {
     public string Name => "Enter";
     public float Weight => 0.40f;
 
-    public bool CanRun(LobbyFlowContext ctx)
+    public bool CanRun(IntroFlowContext ctx)
     {
         return true;
     }
 
-    public async UniTask<FlowResult> RunAsync(LobbyFlowContext ctx)
+    public async UniTask<FlowResult> RunAsync(IntroFlowContext ctx)
     {
         ctx.SetTextKey?.Invoke("Entering the Game");
 

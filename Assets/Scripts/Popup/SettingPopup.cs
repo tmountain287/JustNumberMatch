@@ -1,4 +1,4 @@
-
+﻿
 using Common.Manager;
 using Common.UI;
 using Cysharp.Threading.Tasks;
@@ -12,7 +12,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace JustOneMatch.UI
+namespace UI.Popup
 {
     public class SettingPopup : BasePopup
     {

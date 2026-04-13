@@ -1,0 +1,12 @@
+Go2.png
+size:668,468
+filter:Linear,Linear
+Go/02
+bounds:434,2,229,214
+offsets:0,1,230,215
+Go/04
+bounds:2,45,430,421
+offsets:0,1,431,422
+Go/Go2
+bounds:434,218,230,248
+offsets:12,3,256,256

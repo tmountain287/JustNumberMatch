@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace JustOneMatch.UI
+namespace UI.Popup
 {
     public class SelectUserPanel : MonoBehaviour
     {
@@ -48,15 +48,15 @@ namespace JustOneMatch.UI
 
             levelUI.SetLevelUI(_userData.level, _userData.xp, TableDataManager.Instance.TableLevelData.GetTableData(_userData.level).xp);
 
-            for(int i=0; i<sliderList.Count; i++)
-            {
-                int maxStage = TableDataManager.Instance.TableStageData.StageTableDataDic[(DifficultyType)i].Count;
+            //for(int i=0; i<sliderList.Count; i++)
+            //{
+            //    int maxStage = TableDataManager.Instance.TableStageData.StageTableDataDic[(DifficultyType)i].Count;
 
-                int clearStage = _userData.clearStageInfoDic[(DifficultyType)i];
+            //    int clearStage = _userData.clearStageInfoDic[(DifficultyType)i];
 
-                sliderValueList[i].text = $"{clearStage}/{maxStage}";
-                sliderList[i].value = (float)clearStage / maxStage;
-            }
+            //    sliderValueList[i].text = $"{clearStage}/{maxStage}";
+            //    sliderList[i].value = (float)clearStage / maxStage;
+            //}
 
             for(int i = 0; i < itemCountText.Count; i++)
             {

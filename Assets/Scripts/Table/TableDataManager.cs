@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static StageTableData;
 
 public class TableDataManager : MonoSingletonDont<TableDataManager>
 {
@@ -13,9 +12,7 @@ public class TableDataManager : MonoSingletonDont<TableDataManager>
     public TableShopData TableShopData { get; private set; }
     public TableGPGAchievementData TableGPGAchievementData { get; private set; }
     public TableLevelData TableLevelData { get; private set; }
-    public TableEquationData TableEquationData { get; private set; }
-    public TableStageData TableStageData { get; private set; }
-
+    public TableCharacterData TableCharacterData { get; private set; }
     public TableMissionData TableMissionData { get; private set; }
 
     private bool init = false;
@@ -29,8 +26,6 @@ public class TableDataManager : MonoSingletonDont<TableDataManager>
         TableProductCatalogData = new();
         TableGPGAchievementData = new();
         TableLevelData = new();
-        TableEquationData = new();
-        TableStageData = new();
         TableMissionData = new();
         TableSlangData = new();
         init = true;

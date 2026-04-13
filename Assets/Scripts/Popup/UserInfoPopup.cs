@@ -1,4 +1,4 @@
-using Common.Manager;
+﻿using Common.Manager;
 using Common.UI;
 using Newtonsoft.Json;
 using System;
@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace JustOneMatch.UI
+namespace UI.Popup
 {
     public class UserInfoPopup : BasePopup
     {       

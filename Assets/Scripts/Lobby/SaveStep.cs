@@ -1,15 +1,15 @@
 ﻿using Common.Manager;
 using Cysharp.Threading.Tasks;
-using JustOneMatch.UI;
+using UI.Popup;
 using Newtonsoft.Json;
 using UnityEngine;
 
-public sealed class SaveStep : ILobbyFlowStep
+public sealed class SaveStep : IIntroFlowStep
 {
     public string Name => "Save";
     public float Weight => 0.24f;
 
-    public bool CanRun(LobbyFlowContext ctx)
+    public bool CanRun(IntroFlowContext ctx)
     {
         if(FirebaseManager.Instance!=null)
             return FirebaseManager.Instance.IsLinking && Application.internetReachability != NetworkReachability.NotReachable;
@@ -42,7 +42,7 @@ public sealed class SaveStep : ILobbyFlowStep
             Debug.Log("Strings are identical (Ordinal)");
     }
 
-    public async UniTask<FlowResult> RunAsync(LobbyFlowContext ctx)
+    public async UniTask<FlowResult> RunAsync(IntroFlowContext ctx)
     {
         async UniTask ContinueAfterSaveAsync()
         {

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -103,31 +103,6 @@ public static class ConfigData
     public static int AdsRewardGold = 50;
     public static int TodayAdsRewardGoldCount = 5;
 
-    public static Dictionary<DifficultyType, int> NeedTimeAttckTicketCountDic = new Dictionary<DifficultyType, int>
-    {
-        {DifficultyType.Easy, 1 },
-        {DifficultyType.Normal, 2 },
-        {DifficultyType.Hard, 3 }
-    };
-    
-    /// <summary>보스 스테이지 제한 시간(초, 최대 시간).</summary>
-    public static Dictionary<DifficultyType, int> BossTimeDic = new Dictionary<DifficultyType, int>
-    {
-        {DifficultyType.Easy, 50 },
-        {DifficultyType.Normal, 140 },
-        {DifficultyType.Hard, 200 }
-    };
-
-    /// <summary>
-    /// 별 3개 각각의 임계값(0~100). 남은 시간이 (최대 시간 × 퍼센트 / 100) 이하가 되면 해당 별 소모.
-    /// (기존 초 단위: Easy 60/40/0, Normal 80/30/0, Hard 120/50/0 과 동등한 비율)
-    /// </summary>
-    public static Dictionary<DifficultyType, List<int>> BossTimeStarDic = new Dictionary<DifficultyType, List<int>>
-    {
-        {DifficultyType.Easy, new List<int> { 70, 40, 0 } },
-        {DifficultyType.Normal, new List<int> { 60, 30, 0 }},
-        {DifficultyType.Hard, new List<int> { 60, 30, 0 } }
-    };
 
     public static int UnlockNormalStageLevel;
     public static int UnlockHardStageLevel;
@@ -140,13 +115,18 @@ public static class ConfigData
         10,20,25,100
     };
 
-    public static Dictionary<DifficultyType, int> BossStageStepDic = new Dictionary<DifficultyType, int>
-     {
-        {DifficultyType.Easy, 20 },
-        {DifficultyType.Normal, 25 },
-        {DifficultyType.Hard, 30 }
-    };
-
     /// <summary>프리미엄 팩(AdsSaleRemove) 세일 유효 기간(초). 기본 3일.</summary>
     public static int PremiumPackSaleDurationSeconds = 3 * 24 * 60 * 60;
+
+    public static int MissionOpenLevel = 10;
+
+    public static int FireGaugeMax = 100;
+    public static int FireGaugeAddValue = 10;
+
+    public static int NextMultipleGold = 100;
+    public static int InvalidGold = 50;
+    public static int FireMutilpleGold = 200;
+
+    public static long AdRevivalMoney = 5000L;
+    public static long RevivalMoney = 10000L;
 }

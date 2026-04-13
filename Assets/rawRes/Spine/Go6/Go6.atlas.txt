@@ -1,0 +1,14 @@
+Go6.png
+size:488,868
+filter:Linear,Linear
+Go/02
+bounds:254,224,229,214
+offsets:0,1,230,215
+Go/Glow
+bounds:47,440,434,423
+offsets:1,1,436,425
+Go/Go6
+bounds:47,185,205,253
+offsets:30,0,256,256
+Go/Line
+bounds:2,2,43,861

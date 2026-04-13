@@ -1,0 +1,15 @@
+Cho-Bisang.png
+size:556,176
+filter:Linear,Linear
+01
+bounds:349,40,199,65
+offsets:42,10,280,90
+02
+bounds:349,107,202,66
+offsets:41,12,280,90
+03
+bounds:2,11,345,162
+offsets:29,17,400,200
+04
+bounds:349,2,121,36
+offsets:2,1,125,38

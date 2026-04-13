@@ -6,7 +6,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace JustOneMatch.UI
+namespace UI.Popup
 {
     public class AdRemovePopup : BasePopup
     {
@@ -44,7 +44,8 @@ namespace JustOneMatch.UI
                     }
                     else
                     {
-                        PopupManager.Instance.OpenMessageBoxPopup("", error);
+                        if (error != "UserCancelled")
+                            PopupManager.Instance.OpenMessageBoxPopup("", error);
                     }
                     UIManager.Instance.HideLoading();
                 });

@@ -9,6 +9,7 @@ public class LevelData
 {
     public int level;
     public int xp;
+    public long pointValue;
     public Dictionary<ItemType, int> rewardItemDic = new();
 
 
@@ -18,8 +19,8 @@ public class LevelData
         {
             int.TryParse(row[0], out level);
             int.TryParse(row[1], out xp);
-
-
+            if (row.Length >= 3)
+                long.TryParse(row[2], out pointValue);
 
             int.TryParse(row[3], out int rewardGold);
             rewardItemDic.Add(ItemType.Gold, rewardGold);
@@ -48,6 +49,9 @@ public class TableLevelData : BaseTableData
 
         return LevelDataList.Where(x => x.level == _level).FirstOrDefault();
     }
+
+    /// <summary>인게임 등에서 쓰는 별칭.</summary>
+    public LevelData GetLevelTableData(int level) => GetTableData(level);
 
     public override void Load()
     {

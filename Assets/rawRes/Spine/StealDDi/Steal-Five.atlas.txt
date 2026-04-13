@@ -1,0 +1,14 @@
+Steal-Five.png
+size:1268,188
+filter:Linear,Linear
+01
+bounds:994,27,136,156
+offsets:12,0,160,160
+02
+bounds:1132,27,132,156
+offsets:16,0,160,160
+03
+bounds:850,26,142,157
+offsets:6,1,160,160
+04
+bounds:2,2,846,181

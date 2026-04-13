@@ -1,5 +1,5 @@
 ﻿using Common.Manager;
-using JustOneMatch.UI;
+using UI.Popup;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -124,35 +124,6 @@ public class MainMissionData
     {
         get
         {
-            MissionData data = TableDataManager.Instance.TableMissionData.GetData(id);
-
-            if (data.type == MissionType.DailyMissionComplete)
-            {
-                return UserDataManager.UserData.dailyMissionCompleteCount;
-            }
-            else if (data.type == MissionType.Level)
-            {
-                return UserDataManager.Level;
-                    
-            }
-            else if (data.type == MissionType.Star)
-            {
-                return UserDataManager.UserData.redStarCount;
-            }
-            else if (data.type == MissionType.TimeAttack)
-            {
-                if (UserDataManager.UserData.timeAttackInfoDic.ContainsKey((DifficultyType)data.difficultyType))
-                {
-                    return UserDataManager.UserData.timeAttackInfoDic[(DifficultyType)data.difficultyType];
-                }
-                else
-                    return -1;
-            }
-            else if (data.type == MissionType.Survival)
-            {
-                return UserDataManager.UserData.infiniteBestScore;
-            }
-
             return 0;
         }
     }
@@ -161,36 +132,7 @@ public class MainMissionData
     { 
         get 
         {
-            MissionData data = TableDataManager.Instance.TableMissionData.GetData(id);
-
-            if (data.type == MissionType.DailyMissionComplete)
-            {
-                if (data.value <= UserDataManager.UserData.dailyMissionCompleteCount)
-                    return true;
-            }
-            else if (data.type == MissionType.Level)
-            {
-                if (data.value <= UserDataManager.Level)
-                    return true;
-            }
-            else if (data.type == MissionType.Star)
-            {
-                if (data.value <= UserDataManager.UserData.redStarCount)
-                    return true;
-            }
-            else if (data.type == MissionType.TimeAttack)
-            {
-                if (UserDataManager.UserData.timeAttackInfoDic.ContainsKey((DifficultyType)data.difficultyType))
-                {
-                    if (UserDataManager.UserData.timeAttackInfoDic[(DifficultyType)data.difficultyType] < data.value)
-                        return true;
-                }
-            }
-            else if (data.type == MissionType.Survival)
-            {
-                if (data.value <= UserDataManager.UserData.infiniteBestScore)
-                    return true;
-            }
+            
 
             return false;
         } 
@@ -247,10 +189,7 @@ public class UserData
     public string nickName;
     public int level = 1;
     public int xp = 0;
-    public Dictionary<ItemType, int> itemInfoDic = new();
-    public Dictionary<DifficultyType, int> clearStageInfoDic = new();
-    public Dictionary<DifficultyType, List<BossStarInfo>> bossStarInfoDic = new();
-    public Dictionary<DifficultyType, long> timeAttackInfoDic = new();
+    public Dictionary<ItemType, int> itemInfoDic = new();  
     public Dictionary<TutorialType, bool> tutorialInfoDic = new();
 
     public Dictionary<MissionType, DailyMissionData> dailyMissionDataDic = new();
@@ -272,17 +211,17 @@ public class UserData
     /// <summary>서바이벌 마지막 플레이 점수(최근 1회)</summary>
     public long infiniteLastScore = 0;
 
+    public long money;
+    public long otherMoney;
+    public int gage;
+    public bool isOtherFirstMatch;
+    public List<int> hasCollectionCharacterIndexList = new();
+    public Dictionary<DifficultyType, long> timeAttackInfoDic = new();
+    public Dictionary<DifficultyType, int> clearStageInfoDic = new();
+
     public UserData(Dictionary<ItemType, int> itemInfos)
     {
-        itemInfoDic = itemInfos;
-
-        clearStageInfoDic.Add(DifficultyType.Easy, 0);
-        clearStageInfoDic.Add(DifficultyType.Normal, 0);
-        clearStageInfoDic.Add(DifficultyType.Hard, 0);
-
-        bossStarInfoDic.Add(DifficultyType.Easy, new());
-        bossStarInfoDic.Add(DifficultyType.Normal, new());
-        bossStarInfoDic.Add(DifficultyType.Hard, new());
+        itemInfoDic = itemInfos;     
 
         tutorialInfoDic.Add(TutorialType.Boss, false);
         tutorialInfoDic.Add(TutorialType.TimeAttck, false);
@@ -312,6 +251,16 @@ public class UserData
         string result = localShuffleId[..Math.Min(5, localShuffleId.Length)];
 
         nickName = $"Guest{result}";
+
+        money = 10_000L;
+        otherMoney = 10_000L;
+        gage = 0;
+        isOtherFirstMatch = false;
+        hasCollectionCharacterIndexList = new List<int>();
+        timeAttackInfoDic = new Dictionary<DifficultyType, long>();
+        clearStageInfoDic = new Dictionary<DifficultyType, int>();
+        foreach (DifficultyType d in Enum.GetValues(typeof(DifficultyType)))
+            clearStageInfoDic[d] = 0;
     }
 }
 
@@ -363,31 +312,7 @@ public static class UserDataManager
         }
     }
 
-    private static void NotifyMainMissionsTimeAttack(DifficultyType difficulty, long oldTimeMs, long newTimeMs)
-    {
-        var table = TableDataManager.Instance.TableMissionData;
-        foreach (var mainData in UserData.currentMissionList)
-        {
-            var data = table.GetData(mainData.id);
-            if (data == null || data.type != MissionType.TimeAttack || data.difficultyType != (int)difficulty || mainData.isReward) continue;
-            bool wasComplete = oldTimeMs >= 0 && oldTimeMs < data.value;
-            bool nowComplete = newTimeMs >= 0 && newTimeMs < data.value;
-            if (!wasComplete && nowComplete)
-                NotifyMissionComplete(data);
-        }
-    }
-
-    private static void NotifyMainMissionsSurvival(long oldScore, long newScore)
-    {
-        var table = TableDataManager.Instance.TableMissionData;
-        foreach (var mainData in UserData.currentMissionList)
-        {
-            var data = table.GetData(mainData.id);
-            if (data == null || data.type != MissionType.Survival || mainData.isReward) continue;
-            if (oldScore < data.value && newScore >= data.value)
-                NotifyMissionComplete(data);
-        }
-    }
+    
 
     private static void NotifyMainMissionsDailyComplete(int oldCount, int newCount)
     {
@@ -447,93 +372,7 @@ public static class UserDataManager
     /// randomBossRedStars가 false면 보스는 항상 3성.
     /// clearStageInfoDic을 바꾸기 전의 previousClearedTableId를 넘겨야 재실행 시 redStarCount가 맞습니다.
     /// </summary>
-    public static void ApplyDebugForcedStageProgress(DifficultyType difficulty, int lastClearedTableId, int previousClearedTableId, bool randomBossRedStars)
-    {
-        if (UserData == null || TableDataManager.Instance?.TableStageData?.StageTableDataDic == null)
-            return;
-
-        if (!UserData.bossStarInfoDic.TryGetValue(difficulty, out var starList) || starList == null)
-            return;
-
-        if (!TableDataManager.Instance.TableStageData.StageTableDataDic.TryGetValue(difficulty, out var stageList) || stageList == null)
-            return;
-
-        var bossesInRange = stageList.Where(x => x.stageType == StageType.Boss && x.id <= lastClearedTableId).ToList();
-
-        var bossStarsById = new Dictionary<int, int>();
-        foreach (var b in bossesInRange)
-        {
-            int s = randomBossRedStars ? UnityEngine.Random.Range(1, 4) : 3;
-            bossStarsById[b.id] = s;
-        }
-
-        void SubtractBossContribution(int bossTableId, bool wasClearedBefore)
-        {
-            BossStarInfo info = starList.FirstOrDefault(x => x.stageID == bossTableId);
-            if (info != null)
-            {
-                UserData.redStarCount -= info.starCount;
-                starList.Remove(info);
-            }
-            else if (wasClearedBefore)
-                UserData.redStarCount -= 3;
-        }
-
-        if (lastClearedTableId < previousClearedTableId)
-        {
-            var lostBosses = stageList.Where(x =>
-                x.stageType == StageType.Boss &&
-                x.id > lastClearedTableId &&
-                x.id <= previousClearedTableId).ToList();
-            foreach (var b in lostBosses)
-                SubtractBossContribution(b.id, true);
-        }
-
-        foreach (var b in bossesInRange)
-        {
-            bool wasCleared = b.id <= previousClearedTableId;
-            SubtractBossContribution(b.id, wasCleared);
-        }
-
-        long oldRed = UserData.redStarCount;
-        foreach (var b in bossesInRange)
-        {
-            int s = bossStarsById[b.id];
-            UserData.redStarCount += s;
-            if (s < 3)
-                starList.Add(new BossStarInfo(b.id, s));
-        }
-
-        if (UserData.redStarCount < 0)
-            UserData.redStarCount = 0;
-
-        NotifyMainMissionsStar(oldRed, UserData.redStarCount);
-
-        if (lastClearedTableId > previousClearedTableId)
-        {
-            var newlyCleared = stageList
-                .Where(x => x.id > previousClearedTableId && x.id <= lastClearedTableId)
-                .OrderBy(x => x.id)
-                .ToList();
-
-            foreach (var st in newlyCleared)
-            {
-                if (st.stageType == StageType.Normal)
-                {
-                    Dictionary<ItemType, int> levelReward = AddXP(st.starMax * 10);
-                    AddItemCount(levelReward);
-                }
-                else
-                {
-                    int stars = bossStarsById[st.id];
-                    Dictionary<ItemType, int> levelReward = AddXP(stars * ((int)st.difficultyType + 1) * 10);
-                    AddItemCount(levelReward);
-                }
-            }
-        }
-
-        OnMissionDataChanged?.Invoke();
-    }
+   
 
     /// <summary>보상 광고 시청 시 호출. 전면 광고 노출까지 남은 플레이 횟수 조건을 초기화한다.</summary>
     public static void ResetInterstitialCondition()
@@ -637,7 +476,7 @@ public static class UserDataManager
         set
         {
             UserData.profileIndex = value;
-            OnValueProfileIndexChanged.Invoke(value);
+            OnValueProfileIndexChanged?.Invoke(value);
         }
     }
 
@@ -673,22 +512,7 @@ public static class UserDataManager
         }
     }
 
-    public static bool UpdateInfiniteRecord(long _score)
-    {
-        UserData.infiniteLastScore = _score;
-
-        if (UserData.infiniteBestScore <= _score && _score > 0)
-        {
-            long oldScore = UserData.infiniteBestScore;
-            UserData.infiniteBestScore = _score;
-            NotifyMainMissionsSurvival(oldScore, _score);
-            Save();
-            return true;
-        }
-
-        Save();
-        return false;
-    }
+   
 
     public static void RefreshAdsRewardGold()
     {
@@ -785,7 +609,20 @@ public static class UserDataManager
 
     public static int GetItemCount(ItemType type)
     {
-        return UserData.itemInfoDic[type];
+        return UserData.itemInfoDic.TryGetValue(type, out int c) ? c : 0;
+    }
+
+    private static void MigrateUserDataFieldsIfMissing()
+    {
+        if (UserData == null) return;
+        UserData.hasCollectionCharacterIndexList ??= new List<int>();
+        UserData.timeAttackInfoDic ??= new Dictionary<DifficultyType, long>();
+        UserData.clearStageInfoDic ??= new Dictionary<DifficultyType, int>();
+        foreach (DifficultyType d in Enum.GetValues(typeof(DifficultyType)))
+        {
+            if (!UserData.clearStageInfoDic.ContainsKey(d))
+                UserData.clearStageInfoDic[d] = 0;
+        }
     }
 
     public static bool Load()
@@ -795,12 +632,13 @@ public static class UserDataManager
         {
             //UserData = new("나", ConfigData.InitMoney, ConfigData.InitGold, TableDataManager.Instance.TableLevelData.GetLevelTableData(1).money, ConfigData.InitCharacterID);
             UserData = new(ConfigData.InititemInfoDic);
-            TableDataManager.Instance.TableEquationData.MakeEquationData(UserData.localShuffleId);
+           
             return false;
         }
 
         UserData = JsonConvert.DeserializeObject<UserData>(json);
-        TableDataManager.Instance.TableEquationData.MakeEquationData(UserData.localShuffleId);        
+        MigrateUserDataFieldsIfMissing();
+       
         SendGPGReport();
         SendGPGAchievement();
         GameAnalyticsHelper.SetUserLevel(Level);
@@ -813,43 +651,7 @@ public static class UserDataManager
         PlayerPrefs.DeleteKey(SaveKey);
     }
 
-    public static Tuple<bool, long> SetTimeAttackRecord(DifficultyType _difficultyType, long _lab)
-    {
-        // 총 클리어 시간(ms). 0 이하는 측정 오류/비정상 — 저장·리더보드 반영 금지
-        if (_lab <= 0)
-        {
-            long existing = UserData.timeAttackInfoDic.TryGetValue(_difficultyType, out var ex) ? ex : -1L;
-            Debug.LogWarning($"[TimeAttack] Ignored invalid total ms ({_lab}) for {_difficultyType}");
-            return Tuple.Create(false, existing);
-        }
 
-        long oldLab = UserData.timeAttackInfoDic.TryGetValue(_difficultyType, out var prev) ? prev : -1;
-        bool save = PlayDailyMission(MissionType.TimeAttackPlay);
-
-        if (!UserData.timeAttackInfoDic.ContainsKey(_difficultyType))
-        {
-            Debug.Log(_lab);
-            UserData.timeAttackInfoDic.Add(_difficultyType, _lab);
-            NotifyMainMissionsTimeAttack(_difficultyType, oldLab, _lab);
-            Save();
-            return new(true, -1);
-
-        }
-        else if (UserData.timeAttackInfoDic[_difficultyType] >= _lab)
-        {
-            Debug.Log(_lab);
-            long preLab = UserData.timeAttackInfoDic[_difficultyType];
-            UserData.timeAttackInfoDic[_difficultyType] = _lab;
-            NotifyMainMissionsTimeAttack(_difficultyType, oldLab, _lab);
-            Save();
-            return new(true, preLab);
-        }
-
-        if (save)
-            Save();
-
-        return new(false, UserData.timeAttackInfoDic[_difficultyType]);
-    }
 
     public static void SetForceUserData(UserData _userData)
     {
@@ -865,7 +667,6 @@ public static class UserDataManager
         OnValueLevelChanged?.Invoke();
         OnValueXPChanged?.Invoke();
         OnAdsRewardGoldChanged?.Invoke(UserData.adsRewardGoldPlay.RemainCount);
-        TableDataManager.Instance.TableEquationData.MakeEquationData(UserData.localShuffleId);
     }
 
     public static void Save(bool _check = true, Action _onComplete = null)
@@ -947,105 +748,7 @@ public static class UserDataManager
     }
 
     //처음 클리어면 True 리턴
-    public static Tuple<bool, Dictionary<ItemType, int>, Dictionary<ItemType, int>> ClearStage(StageTableData _data, int _starCount = 0)
-    {
-        bool save = PlayDailyMission(MissionType.StagePlay);
-
-        if (_data.stageType == StageType.Normal)
-        {
-            //처음 클리어
-            if (UserData.clearStageInfoDic[_data.difficultyType] < _data.id)
-            {
-                UserData.clearStageInfoDic[_data.difficultyType] = _data.id;
-
-                AddItemCount(_data.rewardItemDic);
-
-                Dictionary<ItemType, int> levelupReward = AddXP(_data.starMax * 10);
-                AddItemCount(levelupReward);
-                return new(true, _data.rewardItemDic, levelupReward);
-            }
-            else
-            {
-                if (save)
-                    Save();
-                //이미 클리어했던 스테이지
-                return new(false, null, null);
-            }
-        }
-        else
-        {
-            if (UserData.clearStageInfoDic[_data.difficultyType] < _data.id)
-            {
-                UserData.clearStageInfoDic[_data.difficultyType] = _data.id;
-
-                Dictionary<ItemType, int> clearRewardDic = null;
-
-                //완전 클리어
-                if (_starCount == 3)
-                {
-                    AddItemCount(_data.rewardItemDic);
-                    clearRewardDic = _data.rewardItemDic;
-                }
-                else
-                {
-                    var r = _data.rewardItemDic.ToList();
-
-                    clearRewardDic = new();
-
-                    for (int i = 0; i < _starCount; i++)
-                    {
-                        clearRewardDic.Add(r[i].Key, r[i].Value);
-                    }
-
-                    UserData.bossStarInfoDic[_data.difficultyType].Add(new(_data.id, _starCount));
-                }
-
-                long oldRedStar = UserData.redStarCount;
-                UserData.redStarCount += _starCount;
-                NotifyMainMissionsStar(oldRedStar, UserData.redStarCount);
-                Dictionary<ItemType, int> levelupReward = AddXP(_starCount * ((int)_data.difficultyType + 1) * 10);
-                AddItemCount(levelupReward);
-                OnMissionDataChanged?.Invoke();
-                return new(true, clearRewardDic, levelupReward);
-            }
-            else
-            {
-                Dictionary<ItemType, int> clearRewardDic = new();
-                BossStarInfo bossStarInfo = UserData.bossStarInfoDic[_data.difficultyType].FirstOrDefault(x => x.stageID == _data.id);
-                if (bossStarInfo.starCount < _starCount)
-                {
-                    var r = _data.rewardItemDic.ToList();
-
-                    for (int i = bossStarInfo.starCount; i < _starCount; i++)
-                    {
-                        clearRewardDic.Add(r[i].Key, r[i].Value);
-                    }
-
-                    if (_starCount < 3)
-                        bossStarInfo.starCount = _starCount;
-                    else
-                        UserData.bossStarInfoDic[_data.difficultyType].Remove(bossStarInfo);
-
-                    long oldRedStar = UserData.redStarCount;
-                    UserData.redStarCount += _starCount - bossStarInfo.starCount;
-                    NotifyMainMissionsStar(oldRedStar, UserData.redStarCount);
-
-                    Dictionary<ItemType, int> levelupReward = AddXP((_starCount - bossStarInfo.starCount) * ((int)_data.difficultyType + 1) * 10);
-                    AddItemCount(levelupReward);
-                    OnMissionDataChanged?.Invoke();
-                    return new(true, clearRewardDic, levelupReward);
-                }
-                else
-                {
-                    if (save)
-                        Save();
-                    //남은 스타가 적거나 같다
-                    return new(false, null, null);
-                }
-            }
-        }
-    }
-
+   
     public static bool PlayDailyMission(MissionType _type)
     {
         var dailyData = UserData.dailyMissionDataDic[_type];
@@ -1065,6 +768,113 @@ public static class UserDataManager
     private const string LeaderboardTimeAttackNormal = "CgklmY6s0PgWEAIQBg";
     private const string LeaderboardTimeAttackHard = "CgklmY6s0PgWEAIQBW";
     private const string LeaderboardSurvival = "CgklmY6s0PgWEAIQCA";
+
+    public static long Gold => UserData != null ? GetItemCount(ItemType.Gold) : 0L;
+
+    public static long Money
+    {
+        get => UserData != null ? UserData.money : 0L;
+        set
+        {
+            if (UserData != null)
+                UserData.money = value;
+        }
+    }
+
+    public static long OtherMoney
+    {
+        get => UserData != null ? UserData.otherMoney : 0L;
+        set
+        {
+            if (UserData != null)
+                UserData.otherMoney = value;
+        }
+    }
+
+    public static int Gage
+    {
+        get => UserData != null ? UserData.gage : 0;
+        set
+        {
+            if (UserData != null)
+                UserData.gage = value;
+        }
+    }
+
+    public static void AddGauge(int add)
+    {
+        if (UserData == null) return;
+        UserData.gage = Math.Min(ConfigData.FireGaugeMax, UserData.gage + add);
+    }
+
+    public static void SubGold(int gold)
+    {
+        if (gold <= 0 || UserData == null) return;
+        SubItemCount(ItemType.Gold, gold);
+    }
+
+    public static void UseStealItem(StealType stealType)
+    {
+        // 스틸 티켓 전용 ItemType 연동 시 SubItemCount 처리
+    }
+
+    public static void WinningStreakClear()
+    {
+    }
+
+    public static void RestoreResult(long loseMoney)
+    {
+        if (UserData == null || InGameManager.Instance == null) return;
+        UserData.money = InGameManager.Instance.MyPlayer.Money.Value;
+        UserData.otherMoney = InGameManager.Instance.OtherPlayer.Money.Value;
+    }
+
+    public static void ApplyMatchResultMoney(bool isCurrentPlayerSlot0, long reward, Action onComplete = null)
+    {
+        if (UserData == null)
+        {
+            onComplete?.Invoke();
+            return;
+        }
+        if (InGameManager.Instance != null)
+        {
+            UserData.money = InGameManager.Instance.MyPlayer.Money.Value;
+            UserData.otherMoney = InGameManager.Instance.OtherPlayer.Money.Value;
+        }
+        Save(true, onComplete);
+    }
+
+    public static void SetResult(bool isPlayerWin, long reward)
+    {
+        SetResult(isPlayerWin, reward, 0, 0);
+    }
+
+    public static void SetResult(bool isPlayerWin, long reward, int finalScore, int goCount)
+    {
+        if (UserData == null) return;
+        if (InGameManager.Instance != null)
+        {
+            UserData.money = InGameManager.Instance.MyPlayer.Money.Value;
+            UserData.otherMoney = InGameManager.Instance.OtherPlayer.Money.Value;
+        }
+        Save(false);
+    }
+
+    public static void LevelUp()
+    {
+        if (UserData == null || TableDataManager.Instance == null) return;
+        int prev = Level;
+        Level = prev + 1;
+        GameAnalyticsHelper.LogLevelUp(Level, prev);
+        NotifyMainMissionsLevel(prev, Level);
+    }
+
+    public static void AddViewCharacter(int characterTableId)
+    {
+        if (UserData == null) return;
+        if (!UserData.hasCollectionCharacterIndexList.Contains(characterTableId))
+            UserData.hasCollectionCharacterIndexList.Add(characterTableId);
+    }
 
     public static void SendGPGReport()
     {

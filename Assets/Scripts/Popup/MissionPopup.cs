@@ -1,4 +1,4 @@
-using Common.Manager;
+﻿using Common.Manager;
 using Common.UI;
 using Crystal;
 using SuperScrollView;
@@ -7,7 +7,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace JustOneMatch.UI
+namespace UI.Popup
 {
     public class MissionPopup : BasePopup
     {

@@ -1,0 +1,17 @@
+PukSweep.png
+size:404,392
+filter:Linear,Linear
+01
+bounds:2,125,266,264
+02
+bounds:2,11,141,112
+03
+bounds:145,16,118,107
+04
+bounds:265,2,100,118
+offsets:0,1,100,119
+05
+bounds:270,122,113,115
+06
+bounds:270,239,132,150
+offsets:0,1,132,151

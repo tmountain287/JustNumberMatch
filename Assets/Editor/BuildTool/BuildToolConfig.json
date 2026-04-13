@@ -1,8 +1,8 @@
 {
     "buildName": "crowncardquest",
     "androidBundleVersion": "1.0",
-    "androidVersionCode": 25,
-    "buildAsAppBundle": false,
+    "androidVersionCode": 1,
+    "buildAsAppBundle": true,
     "iosBundleVersion": "1.0",
     "iosBuildNumber": "1",
     "openAfterBuild": true,

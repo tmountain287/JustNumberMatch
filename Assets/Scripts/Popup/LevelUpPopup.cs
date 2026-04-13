@@ -1,4 +1,4 @@
-using Common.Manager;
+﻿using Common.Manager;
 using Common.UI;
 using DG.Tweening;
 using System;
@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace JustOneMatch.UI
+namespace UI.Popup
 {
     public class LevelUpPopup : BasePopup
     {
@@ -30,7 +30,7 @@ namespace JustOneMatch.UI
                     rewardItemList.PlayMultiple();
                     UserDataManager.AddItemCount(rewardItemDic);
                     claimAgainButton.gameObject.SetActive(false);
-                }, null, "levelup_reward");
+                }, null);
             });
 
             closeButton.onClick.AddListener(() =>

@@ -1,0 +1,15 @@
+Godori-Bisang.png
+size:612,176
+filter:Linear,Linear
+01
+bounds:349,40,254,65
+offsets:14,10,280,90
+02
+bounds:349,107,258,66
+offsets:12,12,280,90
+03
+bounds:2,11,345,162
+offsets:29,17,400,200
+04
+bounds:349,2,121,36
+offsets:2,1,125,38
