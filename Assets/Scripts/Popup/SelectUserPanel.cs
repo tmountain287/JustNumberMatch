@@ -46,7 +46,7 @@ namespace UI.Popup
 
             onSelectClick = _onSelectClick;
 
-            levelUI.SetLevelUI(_userData.level, _userData.xp, TableDataManager.Instance.TableLevelData.GetTableData(_userData.level).xp);
+            //levelUI.SetLevelUI(_userData.level, _userData.xp, TableDataManager.Instance.TableLevelData.GetLevelTableData(_userData.level).xp);
 
             //for(int i=0; i<sliderList.Count; i++)
             //{

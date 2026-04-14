@@ -36,7 +36,7 @@ public class GPGAchievementData
             }
             else
             {
-                Debug.LogWarning($"Invalid type value: {row[3]} for CharacterTableData ID {id}");
+                Debug.LogWarning($"Invalid type value: {row[3]} for CharacterData ID {id}");
                 achievementType = GPGAchievementType.StageClear; // 기본값으로 처리
             }
 

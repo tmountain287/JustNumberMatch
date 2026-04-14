@@ -42,7 +42,7 @@ namespace UI.Popup
 
         public override void SetSkillCard()
         {
-            //CharacterData data = TableDataManager.Instance.TableCharacterData.GetCharacterTableData(InGamePlayer.PlayerData.characterID);
+            //CharacterData data = TableDataManager.Instance.TableCharacterData.GetCharacterData(InGamePlayer.PlayerData.characterID);
 
             //mainSkillCard.SetMainSkillCard(data,
             //() =>
@@ -75,15 +75,6 @@ namespace UI.Popup
 
         private void Start()
         {
-            for (int i = 0; i < skillButtonList.Count; i++)
-            {
-                int index = i;
-                skillButtonList[i].onClick.AddListener(() =>
-                {
-                    InGameManager.Instance.SendSkillCard((CardMainType)index, true);
-                });
-            }
-
             collectionMineButton.onClick.AddListener(() =>
             {
                 List<PlayerData> playerDatas = CNetDocument.InGame.InGamePlayerList.Select(x => x.PlayerData).ToList();
@@ -121,10 +112,7 @@ namespace UI.Popup
             //    stealItemButtonR.gameObject.SetActive(false);
             //});
 
-            stealItemButtonL.transform.DOLocalMoveX(-500, 0.3f).SetEase(Ease.InBack).OnComplete(() =>
-            {
-                stealItemButtonL.gameObject.SetActive(false);
-            });
+        
             handCardIcons.gameObject.SetActive(false);
         }
 
@@ -158,12 +146,24 @@ namespace UI.Popup
                 handCards.SetDisableCards(false);
                 List<HandCardIcon.Type> typeList = new();
 
-                List<NxCard> boardCardList = CNetDocument.InGame.BoardCards.Cards;
+                List<NxCard> boardCardList = CNetDocument.InGame.BoardCards?.Cards ?? new List<NxCard>();
                 List<NxCard> playerDragList = CNetDocument.InGame.InGamePlayerList.SelectMany(player => player.PlayerData.CollectCards.Cards ?? Enumerable.Empty<NxCard>()).ToList();
                 
                 handCards.CardList.ForEach(card =>
                 {
                     HandCardIcon.Type cardType = HandCardIcon.Type.None;
+
+                    // NxCard 정책(InGame/NXCard.cs): Sn == -1 이면 CardData는 의도적으로 null(뒷면·마스킹). GostopLocal도 동일하며 CardData.MainType을 바로 쓰면 NRE.
+                    if (card == null || card.NXCard == null)
+                    {
+                        typeList.Add(HandCardIcon.Type.None);
+                        return;
+                    }
+                    if (card.NXCard.CardData == null)
+                    {
+                        typeList.Add(HandCardIcon.Type.None);
+                        return;
+                    }
 
                     if (card.NXCard.CardData.MainType == CardMainType.JOCKER || card.NXCard.CardData.MainType == CardMainType.BOMB)
                     {
@@ -171,9 +171,9 @@ namespace UI.Popup
                     }
                     else
                     {
-                        int handInCount = handCards.CardList.Count(x => x.NXCard.SubIndex == card.NXCard.SubIndex);
-                        int boardInCount = boardCardList.Count(x => x.SubIndex == card.NXCard.SubIndex);
-                        int playerDragInCount = playerDragList.Count(x => x.SubIndex == card.NXCard.SubIndex && x.CardData.MainType != CardMainType.JOCKER);
+                        int handInCount = handCards.CardList.Count(x => x?.NXCard?.CardData != null && x.NXCard.SubIndex == card.NXCard.SubIndex);
+                        int boardInCount = boardCardList.Count(x => x != null && x.SubIndex == card.NXCard.SubIndex);
+                        int playerDragInCount = playerDragList.Count(x => x != null && x.CardData != null && x.SubIndex == card.NXCard.SubIndex && x.CardData.MainType != CardMainType.JOCKER);
 
                         if (handInCount >= 3)
                         {
@@ -212,12 +212,7 @@ namespace UI.Popup
                     }
 
                     typeList.Add(cardType);
-                });
-
-                if (handCards.CardList.Count <= 9) // && !useMainSkill)// && UserDataManager.PeeStealCount > 0)
-                {
-                    typeList.Insert(0, HandCardIcon.Type.None);
-                }
+                });              
 
                 //if(handCards.CardList.Count == 9)
                 //{

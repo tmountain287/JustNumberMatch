@@ -26,6 +26,8 @@ public class DivideCardState : ServerModuleState
 
             _event.aPlayerHolder0 = InGameManager.Instance.CardDeck.GetCard(10);
             _event.aPlayerHolder1 = InGameManager.Instance.CardDeck.GetCard(10);
+
+
             //k++;
             InGameManager.Instance.SetDivideCards(_event.aBoardHolder, _event.aPlayerHolder0, _event.aPlayerHolder1);
 

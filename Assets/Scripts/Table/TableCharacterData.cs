@@ -33,7 +33,7 @@ public class CharacterData
             }
             else
             {
-                Debug.LogWarning($"Invalid type value: {row[3]} for CharacterTableData ID {id}");
+                Debug.LogWarning($"Invalid type value: {row[3]} for CharacterData ID {id}");
                 gengerType = GenderType.Male; // 기본값으로 처리
             }
 
@@ -43,7 +43,7 @@ public class CharacterData
             //}
             //else
             //{
-            //    Debug.LogWarning($"Invalid type value: {row[4]} for CharacterTableData ID {id}");
+            //    Debug.LogWarning($"Invalid type value: {row[4]} for CharacterData ID {id}");
             //    mainSkillType = MainSkillType.None; // 기본값으로 처리
             //}
 
@@ -56,17 +56,17 @@ public class TableCharacterData : BaseTableData
 {
     public List<CharacterData> CharacterDataList { get; private set; }
 
-    public CharacterData GetCharacterTableData(int _id)
+    public CharacterData GetCharacterData(int _id)
     {
         return CharacterDataList.Where(x => x.id == _id).FirstOrDefault();
     }
 
     public CharacterData GetLevelTableDataByLevel(int _level)
     {
-        //int charId = TableDataManager.Instance.TableLevelData.GetLevelTableData(_level).charId;
-
-        //return GetCharacterTableData(charId);
-        return null;
+        if (CharacterDataList == null || CharacterDataList.Count == 0)
+            return null;
+        int idx = Mathf.Clamp(_level - 1, 0, CharacterDataList.Count - 1);
+        return CharacterDataList[idx];
     }
 
     public override void Load()

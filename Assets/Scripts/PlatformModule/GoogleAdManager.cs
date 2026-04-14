@@ -94,12 +94,12 @@ public class GoogleAdManager : MonoSingletonDont<GoogleAdManager>
                     isInitialized = true;
                     interstitialAd = new InterstitialAdWrapper(interstitialAdUnitId, () => onOpenEvent?.Invoke(), () => onCloseEvent?.Invoke());
                     rewardedAd = new RewardAdWrapper(rewardedAdUnitId, () => onOpenEvent?.Invoke(), () => onCloseEvent?.Invoke());
-                    if (useBannerAds)
-                        bannerAd = new BannerAdWrapper(bannerAdUnitId, AdPosition.Bottom, ApplyBannerVisibility);
+                    //if (useBannerAds)
+                    //    bannerAd = new BannerAdWrapper(bannerAdUnitId, AdPosition.Bottom, ApplyBannerVisibility);
 
                     RequestInterstitialAd();
                     RequestRewardedAd();
-                    ApplyBannerVisibility();
+                    //ApplyBannerVisibility();
                 });
             }
             yield return new WaitForSeconds(retryInterval);

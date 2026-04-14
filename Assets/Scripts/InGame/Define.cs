@@ -385,6 +385,9 @@ public class CardDeck
         cardList.ForEach(card => cardStack.Push(card));
     }
 
+    /// <summary>덱에 남은 장 수(패 나누기·뒤집기 등으로 소모된 뒤 값).</summary>
+    public int CardsRemaining => cardStack.Count;
+
     public int GetCard()
     {
         if (cardStack.Count == 0)

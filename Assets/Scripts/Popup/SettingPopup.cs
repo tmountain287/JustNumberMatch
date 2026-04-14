@@ -201,7 +201,7 @@ namespace UI.Popup
             latestObj.SetActive(currentVersion <= float.Parse(Application.version));
 
             closeAddAction = null;
-           // CharacterResManager.Instance.SetImage(charImage, TableDataManager.Instance.TableCharacterData.GetCharacterTableData(UserDataManager.SelectIndex).resource, CharacterImage.Type.LobbyUI);
+           // CharacterResManager.Instance.SetImage(charImage, TableDataManager.Instance.TableCharacterData.GetCharacterData(UserDataManager.SelectIndex).resource, CharacterImage.Type.LobbyUI);
 
             string uid = PlayerPrefs.GetString("UserUID", "");
             bool isGoogleLogin = !string.IsNullOrEmpty(uid);

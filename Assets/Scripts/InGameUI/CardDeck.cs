@@ -27,6 +27,9 @@ namespace UI.Popup
         private Sequence mainSequence = null;
         private List<Sequence> cardSequences = new List<Sequence>();
 
+        /// <summary>덱에 쌓인 시각적 카드 수(PopCard로 소모).</summary>
+        public int VisualStackCount => cardList.Count;
+
         private void OnValidate()
         {
             
@@ -61,9 +64,35 @@ namespace UI.Popup
 
         public Card PopCard()
         {
+            if (cardList == null || cardList.Count == 0)
+            {
+                // 근본 원인: Init의 Clear 이후 셔플 UI보다 나누기가 먼저 오거나, 이벤트 순서 꼬임. 여기서 한 번만 시각 덱을 복구해 Pop을 보장.
+                Debug.LogWarning("[CardDeck UI] PopCard: 시각 덱 비어 있음 — MakeDeck(50) 긴급 보충.");
+                MakeDeck(50);
+            }
+
+            if (cardList == null || cardList.Count == 0)
+            {
+                Debug.LogError("[CardDeck UI] PopCard: MakeDeck 후에도 비어 있음 — 프리팹(CardPositionGroup 슬롯·풀) 확인.");
+                return null;
+            }
+
             Card card = cardList[^1];
             cardList.RemoveAt(cardList.Count - 1);
             return card;
+        }
+
+        /// <summary>
+        /// 패 나누기·뒤집기 등 PopCard 전에 호출. 논리 덱(InGameManager.CardDeck)과 달리 UI는 Init에서 Clear된 뒤
+        /// 셔플 이벤트가 오기 전에 나누기가 오면 비어 있을 수 있음.
+        /// </summary>
+        public void EnsureVisualCardsForDivide(int minimumCount = 28, int rebuildCount = 50)
+        {
+            if (cardList.Count >= minimumCount)
+                return;
+
+            Debug.LogWarning($"[CardDeck UI] 시각적 카드 부족({cardList.Count} < {minimumCount}) — MakeDeck({rebuildCount})로 복구.");
+            MakeDeck(rebuildCount);
         }
 
         public void ResetSequence()
@@ -195,6 +224,8 @@ namespace UI.Popup
         public Card GetTopCard(int _iSn = -1, int _subIndex = -1)
         {
             Card card = PopCard();
+            if (card == null)
+                return null;
             card.NXCard = new(_iSn, _subIndex);
             return card;
         }
@@ -216,11 +247,11 @@ namespace UI.Popup
         public List<Card> GetTopCard(List<int> _nxCardList)
         {
             List<Card> tempCardList = new();
+            if (_nxCardList == null)
+                return tempCardList;
+            // GostopLocal과 동일: 요청 개수 == 리스트 길이(중간 생략 금지 — 손패·힌트 아이콘 개수 불일치 방지).
             for (int i = 0; i < _nxCardList.Count; i++)
-            {
-                Card card = GetTopCard(_nxCardList[i]);
-                tempCardList.Add(card);
-            }
+                tempCardList.Add(GetTopCard(_nxCardList[i]));
 
             return tempCardList;
         }

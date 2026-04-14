@@ -8,16 +8,16 @@ namespace Common.UI
     {
         public enum Type
         {
-            NONE,
             INTRO,
             LOBBY,
             STAGE,
             TIMEATTACT,
             GAME,
             DEBUG,
+            MAX,
         }
 
-        [SerializeField] private Type type = Type.NONE;        
+        [SerializeField] private Type type = Type.INTRO;        
 
         public Type UIType { get => type;}     
         
@@ -28,6 +28,7 @@ namespace Common.UI
 
         public void SetUI(Type _type)
         {
+            Debug.Log("ddddddddddddd");
             gameObject.SetActive(type == _type);
         }
     }

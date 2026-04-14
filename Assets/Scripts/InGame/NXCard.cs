@@ -44,6 +44,8 @@ public class NxCardList
     public void SetCards(List<int> snList)
     {
         Cards.Clear();
+        if (snList == null)
+            return;
         snList.ForEach(sn => Add(sn));
     }
 

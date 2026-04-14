@@ -25,7 +25,7 @@ public class UIManager : MonoSingleton<UIManager>
     public BaseUI.Type CurrentUIType { get => currentUIType; set => currentUIType = value; }
     
 
-    private BaseUI.Type currentUIType = BaseUI.Type.INTRO;
+    private BaseUI.Type currentUIType = BaseUI.Type.MAX;
 
     //private void Start()
     //{
@@ -79,18 +79,20 @@ public class UIManager : MonoSingleton<UIManager>
 
     public bool ShowUI(BaseUI.Type _type)
     {
+        Debug.Log("ddddddddddddd");
         if(CurrentUIType != _type)
         {
+            Debug.Log("ddddddddddddd");
             uiList.ForEach(x => x.SetUI(_type));
             CurrentUIType = _type;
-            GoogleAdManager.Instance.UpdateBannerForCurrentUI(_type);
+            //GoogleAdManager.Instance.UpdateBannerForCurrentUI(_type);
 
-            if (_type == BaseUI.Type.STAGE)
-            {
-                if (deferredPremiumSalePopupCoroutine != null)
-                    StopCoroutine(deferredPremiumSalePopupCoroutine);
-                deferredPremiumSalePopupCoroutine = StartCoroutine(DeferredPremiumSalePopupRoutine());
-            }
+            //if (_type == BaseUI.Type.STAGE)
+            //{
+            //    if (deferredPremiumSalePopupCoroutine != null)
+            //        StopCoroutine(deferredPremiumSalePopupCoroutine);
+            //    deferredPremiumSalePopupCoroutine = StartCoroutine(DeferredPremiumSalePopupRoutine());
+            //}
 
             return true;
         }

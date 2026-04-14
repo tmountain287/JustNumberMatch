@@ -8,6 +8,7 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Threading;
 
 
 public class IntroUI : BaseUI
@@ -19,6 +20,9 @@ public class IntroUI : BaseUI
 
     private ProgressFlow flow;
 
+    /// <summary>인트로 플로우는 앱에서 한 번만. 씬에 IntroUI가 둘 이상이거나 Start가 두 번 오면 EnterStep.RunAsync도 중복 실행됨.</summary>
+    private static int s_introFlowRunGate;
+
     private void Start()
     {
         progressbar.gameObject.SetActive(true);
@@ -28,6 +32,24 @@ public class IntroUI : BaseUI
     }
 
     private async UniTaskVoid Run()
+    {
+        if (Interlocked.CompareExchange(ref s_introFlowRunGate, 1, 0) != 0)
+        {
+            Debug.LogWarning("[IntroUI] Run 이미 진행 중이거나 완료됨 — 중복 진입 무시(EnterStep 이중 호출 방지). 씬에 IntroUI가 두 개 없는지 확인하세요.");
+            return;
+        }
+
+        try
+        {
+            await RunIntroFlowCoreAsync();
+        }
+        finally
+        {
+            Interlocked.Exchange(ref s_introFlowRunGate, 0);
+        }
+    }
+
+    private async UniTask RunIntroFlowCoreAsync()
     {
         UserDataManager.Load();
 
@@ -55,6 +77,7 @@ public class IntroUI : BaseUI
         if (Application.internetReachability == NetworkReachability.NotReachable)
         {
             await new EnterStep().RunAsync(ctx);
+            Debug.Log("dasfasdf");
             return;
         }
 

@@ -23,7 +23,10 @@ public sealed class EnterStep : IIntroFlowStep
         GameAnalyticsHelper.LogLobbyEntered();
         // 접속 시점에 다음날 13시 재접속 푸시 예약 (푸시 ON일 때만)
         LocalPushManager.Instance.RefreshDailyComebackPush();
+
+        Debug.Log("111111111111111111111111111111");
         // 여기서 다음 씬/로비 진입/페이드 등
+        InGameManager.Instance.GameInit();
         UIManager.Instance.ShowUI(BaseUI.Type.STAGE);
 
         return FlowResult.Continue;

@@ -96,7 +96,7 @@ namespace UI.Popup
 
         public virtual void SetSkillCard()
         {
-            //TableDataManager.Instance.TableCharacterData.GetCharacterTableData(InGamePlayer.PlayerData.characterID)
+            //TableDataManager.Instance.TableCharacterData.GetCharacterData(InGamePlayer.PlayerData.characterID)
         }
 
         public virtual void ResetSkillCard()
@@ -106,7 +106,7 @@ namespace UI.Popup
 
         public void PlayVoice(Enum sourceEnum)
         {
-            GenderType genderType = TableDataManager.Instance.TableCharacterData.GetCharacterTableData(InGamePlayer.PlayerData.characterID).gengerType;
+            GenderType genderType = TableDataManager.Instance.TableCharacterData.GetCharacterData(InGamePlayer.PlayerData.characterID).gengerType;
             
             if (Enum.TryParse(sourceEnum.ToString(), out VoiceType voiceType))
             {

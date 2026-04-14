@@ -36,8 +36,7 @@ public class LevelUI : MonoBehaviour
 
     public void SetLevelUI()
     {
-        LevelData data = TableDataManager.Instance.TableLevelData.GetTableData(UserDataManager.Level);
-        SetLevelUI(UserDataManager.Level, UserDataManager.XP, data.xp);
+      
     }
 
     public void SetLevelUI(int _level, int _xp, int _max)

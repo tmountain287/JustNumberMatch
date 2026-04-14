@@ -215,6 +215,8 @@ public class UserData
     public long otherMoney;
     public int gage;
     public bool isOtherFirstMatch;
+    /// <summary>프롤로그/튜토리얼 완료 여부. 로컬 빌드 기본은 완료로 두어 인게임 진입을 막지 않음.</summary>
+    public bool isPrologueComplete = true;
     public List<int> hasCollectionCharacterIndexList = new();
     public Dictionary<DifficultyType, long> timeAttackInfoDic = new();
     public Dictionary<DifficultyType, int> clearStageInfoDic = new();
@@ -256,6 +258,7 @@ public class UserData
         otherMoney = 10_000L;
         gage = 0;
         isOtherFirstMatch = false;
+        isPrologueComplete = true;
         hasCollectionCharacterIndexList = new List<int>();
         timeAttackInfoDic = new Dictionary<DifficultyType, long>();
         clearStageInfoDic = new Dictionary<DifficultyType, int>();
@@ -534,36 +537,7 @@ public static class UserDataManager
         GameAnalyticsHelper.LogEarnVirtualCurrency("gold", ConfigData.AdsRewardGold, "ad");
         OnAdsRewardGoldChanged?.Invoke(UserData.adsRewardGoldPlay.RemainCount);
         Save();
-    }
-
-    public static Dictionary<ItemType, int> AddXP(int _value)
-    {
-        if (TableDataManager.Instance.TableLevelData.LastLevel == Level)
-            return null;
-
-        LevelData data = TableDataManager.Instance.TableLevelData.GetTableData(Level);
-
-        int xp = XP + _value;
-
-        if (data.xp <= xp)
-        {
-            int prevLevel = Level;
-            Level++;
-            XP = xp - data.xp;
-            GameAnalyticsHelper.LogLevelUp(Level, prevLevel);
-            GameAnalyticsHelper.SetUserLevel(Level);
-            NotifyMainMissionsLevel(prevLevel, Level);
-
-            LevelData data2 = TableDataManager.Instance.TableLevelData.GetTableData(Level);
-
-            return data2.rewardItemDic;
-        }
-        else
-        {
-            XP = xp;
-            return null;
-        }
-    }
+    }   
 
     public static void AddItemValueChangeEvent(ItemType type, Action action)
     {
@@ -622,6 +596,13 @@ public static class UserDataManager
         {
             if (!UserData.clearStageInfoDic.ContainsKey(d))
                 UserData.clearStageInfoDic[d] = 0;
+        }
+        // 구 세이브: isPrologueComplete 필드가 없으면 역직렬화 시 false로 들어올 수 있음 → 로컬 플레이 허용
+        if (!PlayerPrefs.HasKey("ud_migrate_prologue_complete_v1"))
+        {
+            UserData.isPrologueComplete = true;
+            PlayerPrefs.SetInt("ud_migrate_prologue_complete_v1", 1);
+            PlayerPrefs.Save();
         }
     }
 

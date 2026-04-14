@@ -8,7 +8,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using Util;
-using static UnityEngine.GraphicsBuffer;
 
 namespace UI.Popup
 {
@@ -121,7 +120,6 @@ namespace UI.Popup
         {
             base.OnEnable();
 
-            //추후
             if (CNetDocument.InGame != null)
             {
                 for (int i = 0; i < CNetDocument.InGame.InGamePlayerList.Count; i++)
@@ -135,11 +133,9 @@ namespace UI.Popup
 
                 CNetDocument.InGame.OnChangeGameEvent += OnChangeGame;
             }
-            //CNetDocument.InGame?.OnAddPlayerEvent.AddListener(AddGambler);
-            //CNetDocument.InGame?.OnGameResultEvent.AddListener(OnGameResult);
+
             CardObjectPool.Clear();
             SetBG();
-            InGameManager.Instance.GameStart();
         }
 
         protected override void OnDisable()
@@ -230,10 +226,10 @@ namespace UI.Popup
         public override void HandleFireMatchEvent(object _sender, nxGoStopEvent _event)
         {
             nxFireMatchEvent handleEvent = (nxFireMatchEvent)_event;
-            //CharacterData characterTableData1 = TableDataManager.Instance.TableCharacterData.GetCharacterTableData(handleEvent.characterID1);
-            //CharacterData characterTableData2 = TableDataManager.Instance.TableCharacterData.GetCharacterTableData(handleEvent.characterID2);
+            //CharacterData CharacterData1 = TableDataManager.Instance.TableCharacterData.GetCharacterData(handleEvent.characterID1);
+            //CharacterData CharacterData2 = TableDataManager.Instance.TableCharacterData.GetCharacterData(handleEvent.characterID2);
             //SoundManager.Instance.PlayBgm(fireBgm);
-            //PopupManager.Instance.OpenPopup<InGameFireMatchPopup>().Initialize(characterTableData1, characterTableData2, handleEvent.useTicket);
+            //PopupManager.Instance.OpenPopup<InGameFireMatchPopup>().Initialize(CharacterData1, CharacterData2, handleEvent.useTicket);
         }
 
         public override void HandleInvalidGameEvent(object _sender, nxGoStopEvent _event)
@@ -248,7 +244,7 @@ namespace UI.Popup
             //PopupManager.Instance.OpenPopup<InGameLevelupPopup>(_initialize:(popup)=>
             //{
             //    popup.popupType = PopupType.INGAME;
-            //}).Initialize(handleEvent.iLevel, TableDataManager.Instance.TableCharacterData.GetCharacterTableData(handleEvent.playerData.characterID));
+            //}).Initialize(handleEvent.iLevel, TableDataManager.Instance.TableCharacterData.GetCharacterData(handleEvent.playerData.characterID));
             missionUI.Clear();
             cardDeck.Clear();
             tableCards.Clear();
@@ -308,6 +304,8 @@ namespace UI.Popup
         public override void HandleDivedeCardEvent(object _sender, nxGoStopEvent _event)
         {
             cardDeck.CompleteShuffleAndMerge();
+            // 논리 덱(InGameManager.CardDeck)과 별개로, UI 덱은 Init에서 Clear된 뒤 셔플 이벤트보다 나누기가 먼저 오면 비어 있을 수 있음.
+            cardDeck.EnsureVisualCardsForDivide(minimumCount: 28, rebuildCount: 50);
 
             nxDivideCardEvent handleEvent = (nxDivideCardEvent)_event;
 

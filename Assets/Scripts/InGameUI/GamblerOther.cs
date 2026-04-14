@@ -229,9 +229,7 @@ namespace UI.Popup
         public override void HandleInitEvent(object _sender, nxGoStopEvent _event)
         {
             base.HandleInitEvent(_sender, _event);
-
-            LevelData data = TableDataManager.Instance.TableLevelData.GetLevelTableData(UserDataManager.Level);
-
+            
             int aiRate = 0;// CNetDocument.InGame.FireMatchMultiple > 1 ? data.fireAIRate : data.normalAIRate;
 
             if (aiRate > 0)

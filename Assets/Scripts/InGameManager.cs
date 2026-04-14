@@ -1,12 +1,11 @@
 ﻿using Common.Manager;
 using DG.Tweening;
-using UI.Popup;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
-
 
 public class GameMissionData
 {
@@ -46,8 +45,6 @@ public class InGameManager : MonoSingleton<InGameManager>
     public bool UseFireTicket { get; set; } = false;
 
     public long CurrentLoseMoney { get; set; } = 0;
-
-    public int UseStealItemCount { get; set; } = 0;
 
     [SerializeField] private StateMachine gameStateMachine = null;
 
@@ -136,29 +133,36 @@ public class InGameManager : MonoSingleton<InGameManager>
     }
 
     public void GameClear()
-    {        
+    {
         CNetDocument.ClearInGameEvent();
         gameStateMachine.StopCoroutine();
         gameStateMachine.SetState(EGoStopEventType.EGSEVT_INITIALIZE);
     }
 
     public void GameInit()
-    {        
+    {
         PointValue = TableDataManager.Instance.TableLevelData.GetLevelTableData(UserDataManager.Level).pointValue;
 
         PlayerData playerData1 = new(UserDataManager.NickName, UserDataManager.UserData.profileIndex, true, 0, UserDataManager.Money, UserDataManager.UserData.gage);
 
-        CharacterData characterTableData = TableDataManager.Instance.TableCharacterData.GetLevelTableDataByLevel(UserDataManager.Level);
+        
 
-        PlayerData playerData2 = new(characterTableData.name, characterTableData.id, false, 1, UserDataManager.OtherMoney);
+        CharacterData CharacterData = TableDataManager.Instance.TableCharacterData.GetLevelTableDataByLevel(UserDataManager.Level);
+
+        PlayerData playerData2 = new(CharacterData.name, CharacterData.id, false, 1, UserDataManager.OtherMoney);
 
         PlayerDataList.Add(playerData1);
         PlayerDataList.Add(playerData2);
-        
+
         CurrentTurnSlotIndex = 0;
         CurrentFirstSlotIndex = 0;  //선은 이기면 바꿔줌       
 
         CNetDocument.InGame = new(PointValue, PlayerDataList);
+
+        if (UserDataManager.UserData.isPrologueComplete && CNetDocument.NoticeInfoQueue.Count == 0)
+        {
+            GameStart();
+        }
     }
 
     public void RestartGameReady()
@@ -169,9 +173,9 @@ public class InGameManager : MonoSingleton<InGameManager>
 
         PlayerData playerData1 = new(UserDataManager.NickName, UserDataManager.UserData.profileIndex, true, 0, UserDataManager.Money, UserDataManager.UserData.gage);
 
-        CharacterData characterTableData = TableDataManager.Instance.TableCharacterData.GetLevelTableDataByLevel(UserDataManager.Level);
+        CharacterData CharacterData = TableDataManager.Instance.TableCharacterData.GetLevelTableDataByLevel(UserDataManager.Level);
 
-        PlayerData playerData2 = new(characterTableData.name, characterTableData.id, false, 1, UserDataManager.OtherMoney);
+        PlayerData playerData2 = new(CharacterData.name, CharacterData.id, false, 1, UserDataManager.OtherMoney);
 
         PlayerDataList.Clear();
         PlayerDataList.Add(playerData1);
@@ -210,7 +214,6 @@ public class InGameManager : MonoSingleton<InGameManager>
 
     public void Clear()
     {
-        UseStealItemCount = 0;
         CollectionWarnList.Clear();
         BoardCards.Clear();
         PlayerDataList.ForEach(player => player.Clear());
@@ -219,6 +222,12 @@ public class InGameManager : MonoSingleton<InGameManager>
 
     public void SetDivideCards(List<int> _boardCardList, List<int> _cardList1, List<int> _cardList2)
     {
+        if (_boardCardList == null || _cardList1 == null || _cardList2 == null)
+        {
+            Debug.LogError("[InGameManager] SetDivideCards: 보드/손패 리스트가 null — CardDeck.GetCard가 부족 분배로 null을 반환했을 수 있습니다.");
+            return;
+        }
+
         BoardCards.SetCards(_boardCardList);
         PlayerData player1 = PlayerDataList.Where(x => x.slotIndex == CurrentFirstSlotIndex).FirstOrDefault();
         if (player1 != null)
@@ -665,7 +674,7 @@ public class InGameManager : MonoSingleton<InGameManager>
                         }
                         _event.isGoodStart = CurrentTurnPlayer.HandCards.Count == 9 && isHitBoardCard;
                     }
-                    
+
                     _event.isDragCard = DragCardList.Count > 0;
 
                     gameStateMachine.SetState(EGoStopEventType.EGSEVT_GENERAL_FLIP_CARD, _event);
@@ -722,8 +731,8 @@ public class InGameManager : MonoSingleton<InGameManager>
 
             CurrentTurnPlayer.CollectCards.Log();
             CurrentOtherPlayer.CollectCards.Log();
-            
-            if(GameMissionData != null && CurrentTurnPlayer.MissionMultiple == 1)
+
+            if (GameMissionData != null && CurrentTurnPlayer.MissionMultiple == 1)
             {
                 bool isMissionCard = DragCardList.SnList.Any(val => GameMissionData.cardSnList.Contains(val));
 
@@ -751,7 +760,7 @@ public class InGameManager : MonoSingleton<InGameManager>
                     }
                 }
             }
-            
+
             SendInGameData();
             gameStateMachine.SetState(EGoStopEventType.EGSEVT_DRAG_CARD, _event);
         }
@@ -760,13 +769,12 @@ public class InGameManager : MonoSingleton<InGameManager>
             gameStateMachine.SetState(EGoStopEventType.EGSEVT_DRAG_CARD);
         }
     }
-   
 
-    public void SendSkillCard(CardMainType _mainType, bool _useItem)
+    public bool CanStealCard(CardMainType _mainType)
     {
         List<NxCard> stealCards = new();
 
-        int stealCount = 0;// TableDataManager.Instance.TableStealItemData.GetRandomCount((StealItemType)_mainType);
+        int stealCount = 2;
 
         if (_mainType == CardMainType.PEE)
         {
@@ -778,34 +786,27 @@ public class InGameManager : MonoSingleton<InGameManager>
             stealCards = CurrentOtherPlayer.CollectCards.GetLastElements(_mainType, stealCount);
         }
 
-        //stealCards = CurrentOtherPlayer.CollectCards.GetLastElements(_mainType, stealCount);
+        return stealCards != null && stealCards.Count > 0;
+    }
 
-        //if (_mainType == CardMainType.PEE)
-        //{
-        //    stealCards.AddRange(CurrentOtherPlayer.CollectCards.GetCards(CardMainType.JOCKER));
-        //}
+    public void SendSkillCard(CardMainType _mainType)
+    {
+        List<NxCard> stealCards = new();
 
+        if (_mainType == CardMainType.PEE)
+        {
+            Tuple<bool, List<NxCard>> stealData = GetStealPlayerPee(2);
+            stealCards = stealData.Item2;
+        }
 
         if (stealCards.Count == 0)
             return;
-
-        UseStealItemCount++;
-        if (_useItem)
-        {
-            StealType stealType = (StealType)(_mainType + 1);
-            UserDataManager.UseStealItem(stealType);
-        }
-        else
-        {
-            // 광고 경유 뺏기 사용 — 아이템 소모 없이 1회 사용권 부여
-            StealType stealType = (StealType)(_mainType + 1);
-        }
 
         List<int> stealCardsSnList = stealCards.Select(x => x.Sn).ToList();
 
         nxSkillCardEvent _event = new();
         _event.aStealInfo = stealCardsSnList;
-        _event.mainType = _mainType;
+
         CollectionWarnList.ForEach(x =>
         {
             bool has = stealCards.Any(card => x.all.Contains(card.Sn));
@@ -822,7 +823,7 @@ public class InGameManager : MonoSingleton<InGameManager>
         CollectionWarnList.AddRange(collectionTypeList.Where(x => x.checkOther).ToList());
 
         _event.collectionTypeList = collectionTypeList.Select(x => x.collectionType).ToList();
-        
+
         CurrentTurnPlayer.CollectCards.Add(stealCards);
 
         CurrentOtherPlayer.CollectCards.Remove(stealCards);
@@ -846,6 +847,7 @@ public class InGameManager : MonoSingleton<InGameManager>
                     _event.missionResult = new();
                     _event.missionResult.isSuccess = true;
                     _event.missionResult.iMatchSlotIndex = CurrentTurnSlotIndex;
+
                 }
                 else
                 {
@@ -916,20 +918,20 @@ public class InGameManager : MonoSingleton<InGameManager>
         }
     }
 
-    //public void SendReqUseFiretTicket()
-    //{
-    //    UseFireTicket = true;
-    //    UserDataManager.UseFireTicket();
-    //    UserDataManager.Save(true, () =>
-    //    {
-    //        nxFireMatchEvent _fireEvent = new();
-    //        _fireEvent.characterID1 = MyPlayer.characterID;
-    //        _fireEvent.characterID2 = OtherPlayer.characterID;
-    //        _fireEvent.useTicket = true;
-    //        FireMatchMultiple = ConfigData.FireMaxMultiple;
-    //        gameStateMachine.SetState(EGoStopEventType.EGSEVT_FIRE_MATCH, _fireEvent);
-    //    });
-    //}
+    public void SendReqUseFiretTicket()
+    {
+        UseFireTicket = true;
+        UIManager.Instance.ShowLoading();
+        UserDataManager.Save(true, () =>
+        {
+            UIManager.Instance.HideLoading();
+            nxFireMatchEvent _fireEvent = new();
+            _fireEvent.characterID1 = MyPlayer.characterID;
+            _fireEvent.characterID2 = OtherPlayer.characterID;
+            _fireEvent.useTicket = true;
+            gameStateMachine.SetState(EGoStopEventType.EGSEVT_FIRE_MATCH, _fireEvent);
+        });
+    }
 
     public void SendReqNextGame(bool _multiple, bool _useAds)
     {
@@ -946,12 +948,10 @@ public class InGameManager : MonoSingleton<InGameManager>
                 if (WinMultipleCount == 3)
                 {
                     int gold = (int)Mathf.Pow(2, WinMultipleCount - 1) * ConfigData.NextMultipleGold + ConfigData.NextMultipleGold;
-                    UserDataManager.SubGold(gold);
                 }
                 else
                 {
                     int gold = (int)Mathf.Pow(2, WinMultipleCount) * ConfigData.NextMultipleGold;
-                    UserDataManager.SubGold(gold);
                 }
 
                 isSave = true;
@@ -967,7 +967,7 @@ public class InGameManager : MonoSingleton<InGameManager>
 
         UserDataManager.WinningStreakClear();
 
-        if(isSave)
+        if (isSave)
         {
             UIManager.Instance.ShowLoading();
             UserDataManager.Save(true, () =>
@@ -1018,12 +1018,11 @@ public class InGameManager : MonoSingleton<InGameManager>
     {
         //gameStateMachine.SetState(EGoStopEventType.EGSEVT_INITIALIZE);
         CurrentFirstSlotIndex = CurrentTurnSlotIndex;
-        long revivalMoney = _isAd ? ConfigData.AdRevivalMoney : ConfigData.RevivalMoney;
-        long prevMoney = UserDataManager.Money;
-        UserDataManager.Money = revivalMoney;
-        
+        UserDataManager.Money = _isAd ? ConfigData.AdRevivalMoney : ConfigData.RevivalMoney;
+
         MyPlayer.Money.Value = UserDataManager.Money;
         SendInGameData();
+
         UIManager.Instance.ShowLoading();
         UserDataManager.Save(true, () =>
         {
@@ -1040,21 +1039,18 @@ public class InGameManager : MonoSingleton<InGameManager>
         CharacterData data = TableDataManager.Instance.TableCharacterData.GetLevelTableDataByLevel(UserDataManager.Level);
         PlayerData playerData = new(data.name, data.id, false, 1, UserDataManager.OtherMoney);
 
-        Action nextLevelAction = () =>
-        {
-            PointValue = TableDataManager.Instance.TableLevelData.GetLevelTableData(UserDataManager.Level).pointValue;
+        PointValue = TableDataManager.Instance.TableLevelData.GetLevelTableData(UserDataManager.Level).pointValue;
 
-            nxNextLevelEvent _event = new();
-            _event.iLevel = UserDataManager.Level;
-            _event.poingValue = PointValue;
-            _event.playerData = playerData;
+        nxNextLevelEvent _event = new();
+        _event.iLevel = UserDataManager.Level;
+        _event.poingValue = PointValue;
+        _event.playerData = playerData;
 
-            OtherPlayer.Refresh(data.name, data.id, false, 1, UserDataManager.OtherMoney);
-            IsNagari = false;
-            WinMultipleCount = 0;
-            FireMatchMultiple = 1;
-            gameStateMachine.SetState(EGoStopEventType.EGSEVT_NEXT_LEVEL, _event);
-        };
+        OtherPlayer.Refresh(data.name, data.id, false, 1, UserDataManager.OtherMoney);
+        IsNagari = false;
+        WinMultipleCount = 0;
+        FireMatchMultiple = 1;
+        gameStateMachine.SetState(EGoStopEventType.EGSEVT_NEXT_LEVEL, _event);
     }
 
     public void SendReqNextLevelConfirm()
@@ -1062,31 +1058,6 @@ public class InGameManager : MonoSingleton<InGameManager>
         CurrentFirstSlotIndex = 0;
         CurrentTurnSlotIndex = CurrentFirstSlotIndex;
         gameStateMachine.SetState(EGoStopEventType.EGSEVT_INITIALIZE);
-    }
-
-    public void SendReqFireMatchConfirm(bool _multiple = false, bool _useGold = false)
-    {
-        if (UseFireTicket)
-        {
-            gameStateMachine.SetState(EGoStopEventType.EGSEVT_INITIALIZE);
-        }
-        else
-        {
-            //FireMatchMultiple = _multiple ? ConfigData.FireMaxMultiple : 2;
-            UserDataManager.Gage = 0;
-            if (_useGold)
-            {
-                UserDataManager.SubGold(ConfigData.FireMutilpleGold);
-            }
-
-            UIManager.Instance.ShowLoading();
-            UserDataManager.Save(true, () =>
-            {
-                UIManager.Instance.HideLoading();
-                gameStateMachine.SetState(EGoStopEventType.EGSEVT_INITIALIZE);
-            });
-        }
-        //MyPlayer.GaugeValue.Value = UserDataManager.UserData.gage;        
     }
 
     public void SendReqSelectGoStop(bool _flag)
@@ -1139,14 +1110,14 @@ public class InGameManager : MonoSingleton<InGameManager>
         if (IsBbukReward)
         {
             IsBbukReward = false;
-            if(UserDataManager.Money == 0)
+            if (UserDataManager.Money == 0)
             {
                 gameStateMachine.SetState(EGoStopEventType.EGSEVT_BANKRUPTCY);
             }
             else
             {
                 if (CurrentTurnPlayer.bbukCount == 3)
-                {                    
+                {
                     OnResult(false, 1.5f);
                 }
                 else
@@ -1200,8 +1171,6 @@ public class InGameManager : MonoSingleton<InGameManager>
             }
         }
 
-        int skillMultiple = 1;
-
         //마지막으로 친사람이 선이 되고 현재턴은 그냥 안바까도 됨
         nxResultEvent _resultEvent = new();
         _resultEvent.netResultInfo = new();
@@ -1209,7 +1178,7 @@ public class InGameManager : MonoSingleton<InGameManager>
         _resultEvent.netResultInfo.pointValue = PointValue;
         _resultEvent.netResultInfo.score = CurrentTurnPlayer.bbukCount == 3 ? 7 : CurrentTurnPlayer.CollectionScore;
         _resultEvent.netResultInfo.isNextFire = UserDataManager.UserData.gage >= ConfigData.FireGaugeMax;
-        _resultEvent.netResultInfo.multiPle = (CurrentTurnPlayer.bbukCount == 3) ? (IsNagari ? 2 : 1) * FireMatchMultiple * NextWinMultiple : 
+        _resultEvent.netResultInfo.multiPle = (CurrentTurnPlayer.bbukCount == 3) ? (IsNagari ? 2 : 1) * FireMatchMultiple * NextWinMultiple :
                                             (IsNagari ? 2 : 1)
                                             * CurrentTurnPlayer.MungMultiple
                                             * NextWinMultiple
@@ -1219,16 +1188,11 @@ public class InGameManager : MonoSingleton<InGameManager>
                                             * ((CurrentOtherPlayer.IsKwangBak && CurrentTurnPlayer.KwangCount >= 3) ? 2 : 1)
                                             * ((CurrentOtherPlayer.IsPeeBak && CurrentTurnPlayer.PeeScore > 0) ? 2 : 1)
                                             * (CurrentOtherPlayer.IsGoBak ? 2 : 1)
-                                            * FireMatchMultiple
-                                            * skillMultiple;
-        _resultEvent.netResultInfo.skillMultiple = skillMultiple;
+                                            * FireMatchMultiple;
 
         _resultEvent.netResultInfo.is3Bbuk = CurrentTurnPlayer.bbukCount == 3;
 
         long resultMoney = _resultEvent.netResultInfo.pointValue * _resultEvent.netResultInfo.score * _resultEvent.netResultInfo.multiPle;
-
-        //if (CurrentTurnSlotIndex == 0)
-        //    resultMoney = (long)(resultMoney * (decimal)(1 + UserDataManager.SkillDataDic[SkillType.MONEY_UP] * 0.01));
 
         _resultEvent.netResultInfo.isBankruptcy = CurrentOtherPlayer.Money.Value <= resultMoney;
         _resultEvent.netResultInfo.reward = _resultEvent.netResultInfo.isBankruptcy ? CurrentOtherPlayer.Money.Value : resultMoney;
@@ -1238,7 +1202,7 @@ public class InGameManager : MonoSingleton<InGameManager>
 
         bool isNextFire = false;
 
-        if(CurrentTurnSlotIndex == 1 && _resultEvent.netResultInfo.isBankruptcy)
+        if (CurrentTurnSlotIndex == 1 && _resultEvent.netResultInfo.isBankruptcy)
         {
             //내가 파산
             UserDataManager.UserData.gage = 0;
@@ -1247,7 +1211,7 @@ public class InGameManager : MonoSingleton<InGameManager>
         }
         else
         {
-            if(FireMatchMultiple > 1 && UseFireTicket == false) //어우
+            if (FireMatchMultiple > 1 && UseFireTicket == false) //어우
             {
                 UserDataManager.UserData.gage = 0;
                 MyPlayer.GaugeValue.Value = UserDataManager.UserData.gage;
@@ -1263,14 +1227,10 @@ public class InGameManager : MonoSingleton<InGameManager>
 
         _resultEvent.netResultInfo.isNextFire = isNextFire;
 
-        bool isPlayerWin = CurrentTurnSlotIndex == 0;
-        int finalScore = _resultEvent.netResultInfo.score * _resultEvent.netResultInfo.multiPle;
-        UserDataManager.SetResult(isPlayerWin, _resultEvent.netResultInfo.reward, finalScore, CurrentTurnPlayer.goCount);
-        CurrentLoseMoney = !isPlayerWin ? _resultEvent.netResultInfo.reward : 0;
-
-        // Game Analytics — 게임 결과 + 재화 변동
-        string opponentName = PlayerDataList.Count > 1 ? PlayerDataList[1].name : null;
-        int opponentCharId = PlayerDataList.Count > 1 ? PlayerDataList[1].characterID : 0;
+        bool isWin = CurrentTurnSlotIndex == 0;
+        int totalScore = _resultEvent.netResultInfo.score * _resultEvent.netResultInfo.multiPle;
+        UserDataManager.SetResult(isWin, _resultEvent.netResultInfo.reward, totalScore, CurrentTurnPlayer.goCount);
+        CurrentLoseMoney = CurrentTurnSlotIndex != 0 ? _resultEvent.netResultInfo.reward : 0;
         SendInGameData();
         UseFireTicket = false;
         gameStateMachine.SetState(EGoStopEventType.EGSEVT_RESULT, _resultEvent);
@@ -1292,10 +1252,6 @@ public class InGameManager : MonoSingleton<InGameManager>
                 nxSelectGoStopEvent _event = new();
                 _event.iGoCount = CurrentTurnPlayer.goCount + 1;
 
-                int skillMultiple = 1;
-
-                
-
                 int multiPle = (CurrentTurnPlayer.bbukCount == 3) ? 1 : CurrentTurnPlayer.MungMultiple
                                             * (IsNagari ? 2 : 1)
                                             * NextWinMultiple
@@ -1305,14 +1261,10 @@ public class InGameManager : MonoSingleton<InGameManager>
                                             * ((CurrentOtherPlayer.IsKwangBak && CurrentTurnPlayer.KwangCount >= 3) ? 2 : 1)
                                             * ((CurrentOtherPlayer.IsRealPeeBak && CurrentTurnPlayer.PeeScore > 0) ? 2 : 1)
                                             * (CurrentOtherPlayer.IsGoBak ? 2 : 1)
-                                            * FireMatchMultiple
-                                            * skillMultiple;
-                
-                    
-                long resultMoney = CurrentTurnPlayer.CollectionScore * multiPle * PointValue;
-                //if (CurrentTurnSlotIndex == 0)
-                //    resultMoney = (long)(resultMoney * (decimal)(1 + UserDataManager.SkillDataDic[SkillType.MONEY_UP] * 0.01));
+                                            * FireMatchMultiple;
 
+
+                long resultMoney = CurrentTurnPlayer.CollectionScore * multiPle * PointValue;
                 _event.isbankruptcy = CurrentOtherPlayer.Money.Value <= resultMoney;
 
                 _event.nTotalMoney = _event.isbankruptcy ? CurrentOtherPlayer.Money.Value : resultMoney;

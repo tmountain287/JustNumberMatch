@@ -26,6 +26,7 @@ public class TableDataManager : MonoSingletonDont<TableDataManager>
         TableProductCatalogData = new();
         TableGPGAchievementData = new();
         TableLevelData = new();
+        TableCharacterData = new();
         TableMissionData = new();
         TableSlangData = new();
         init = true;
